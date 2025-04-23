@@ -4,28 +4,28 @@
  */
 
 // تنفيذ التكامل
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     console.log('بدء تنفيذ تكامل نظام ملف المستخدم المحسن الجديد...');
-    
+
     // إضافة الأنماط
     addEnhancedProfileStyles();
-    
+
     // إضافة الوظائف إلى الشريط الجانبي
     enhanceSidebar();
-    
+
     // تعديل مصادقة النظام لدعم الصلاحيات
     enhanceAuthSystem();
-    
+
     // تهيئة نظام ملف المستخدم المحسن إذا كان موجوداً
     if (window.EnhancedUserProfile && typeof window.EnhancedUserProfile.init === 'function') {
         window.EnhancedUserProfile.init();
     } else {
         console.warn('نظام ملف المستخدم المحسن غير موجود. يرجى التأكد من تضمين ملف user-profile-enhanced.js');
-        
+
         // مؤقتاً، نقوم بإنشاء عناصر واجهة المستخدم الأساسية
         createBasicUserProfileElements();
     }
-    
+
     console.log('تم تنفيذ تكامل نظام ملف المستخدم المحسن الجديد بنجاح');
 });
 
@@ -37,11 +37,11 @@ function addEnhancedProfileStyles() {
     if (document.getElementById('enhanced-profile-styles-inline')) {
         return;
     }
-    
+
     // إنشاء عنصر النمط
     const styleElement = document.createElement('style');
     styleElement.id = 'enhanced-profile-styles-inline';
-    
+
     // إضافة متغيرات CSS الأساسية
     styleElement.textContent = `
     :root {
@@ -107,10 +107,10 @@ function addEnhancedProfileStyles() {
         font-size: 1rem;
     }
     `;
-    
+
     // إضافة عنصر النمط إلى الصفحة
     document.head.appendChild(styleElement);
-    
+
     // إضافة ملف CSS الخارجي إذا لم يكن موجوداً
     if (!document.querySelector('link[href="user-profile-enhanced-styles.css"]')) {
         const linkElement = document.createElement('link');
@@ -118,7 +118,7 @@ function addEnhancedProfileStyles() {
         linkElement.href = 'user-profile-enhanced-styles.css';
         document.head.appendChild(linkElement);
     }
-    
+
     console.log('تم إضافة أنماط CSS لنظام ملف المستخدم المحسن');
 }
 
@@ -131,10 +131,10 @@ function enhanceSidebar() {
         console.warn('لم يتم العثور على قائمة الشريط الجانبي');
         return;
     }
-    
+
     // إضافة عنصر إدارة المستخدمين قبل الإعدادات
     const settingsItem = sidebarNav.querySelector('.nav-item [data-page="settings"]').closest('.nav-item');
-    
+
     // إنشاء عنصر إدارة المستخدمين
     const userManagementItem = document.createElement('li');
     userManagementItem.className = 'nav-item user-management admin-only';
@@ -147,20 +147,20 @@ function enhanceSidebar() {
             <span>إدارة المستخدمين</span>
         </a>
     `;
-    
+
     // إضافة العنصر قبل الإعدادات
     if (settingsItem) {
         sidebarNav.insertBefore(userManagementItem, settingsItem);
     } else {
         sidebarNav.appendChild(userManagementItem);
     }
-    
+
     // إضافة مستمع حدث للتنقل
-    userManagementItem.querySelector('.nav-link').addEventListener('click', function(e) {
+    userManagementItem.querySelector('.nav-link').addEventListener('click', function (e) {
         e.preventDefault();
         navigateToPage('user-management');
     });
-    
+
     console.log('تم تحسين الشريط الجانبي بإضافة عناصر إدارة المستخدمين');
 }
 
@@ -171,11 +171,11 @@ function enhanceAuthSystem() {
     // إضافة خاصية الصلاحيات إلى كائن المستخدم الحالي
     if (window.AuthSystem && typeof window.AuthSystem.getUserInfo === 'function') {
         const originalGetUserInfo = window.AuthSystem.getUserInfo;
-        
+
         // استبدال الدالة بنسخة محسنة
-        window.AuthSystem.getUserInfo = function() {
+        window.AuthSystem.getUserInfo = function () {
             const userInfo = originalGetUserInfo.call(window.AuthSystem);
-            
+
             // إضافة نوع المستخدم والصلاحيات إذا لم تكن موجودة
             if (userInfo) {
                 if (!userInfo.type) {
@@ -188,16 +188,16 @@ function enhanceAuthSystem() {
                         userInfo.type = 'user';
                     }
                 }
-                
+
                 // إضافة الصلاحيات الافتراضية إذا لم تكن موجودة
                 if (!userInfo.permissions) {
                     userInfo.permissions = getDefaultPermissions(userInfo.type);
                 }
             }
-            
+
             return userInfo;
         };
-        
+
         console.log('تم تحسين نظام المصادقة لدعم الصلاحيات');
     } else {
         console.warn('نظام المصادقة غير موجود أو لا يوفر وظيفة الحصول على معلومات المستخدم');
@@ -259,17 +259,17 @@ function createBasicUserProfileElements() {
         console.warn('لم يتم العثور على حاوية عناصر الرأس');
         return;
     }
-    
+
     // إنشاء عنصر معلومات المستخدم
     const userInfo = document.createElement('div');
     userInfo.className = 'user-info dropdown';
-    
+
     // الحصول على معلومات المستخدم الحالي
     let currentUser = null;
     if (window.AuthSystem && typeof window.AuthSystem.getUserInfo === 'function') {
         currentUser = window.AuthSystem.getUserInfo();
     }
-    
+
     // تحديد محتوى العنصر
     if (currentUser) {
         // المستخدم مسجل الدخول
@@ -305,13 +305,13 @@ function createBasicUserProfileElements() {
             </button>
         `;
     }
-    
+
     // إضافة العنصر إلى الصفحة
     headerActions.appendChild(userInfo);
-    
+
     // إضافة مستمعي الأحداث
     setupBasicUserMenuListeners(userInfo, currentUser);
-    
+
     console.log('تم إنشاء عناصر واجهة المستخدم الأساسية');
 }
 
@@ -322,62 +322,62 @@ function createBasicUserProfileElements() {
  */
 function setupBasicUserMenuListeners(userInfo, currentUser) {
     if (!userInfo) return;
-    
+
     // تبديل القائمة المنسدلة
     const dropdownToggle = userInfo.querySelector('.dropdown-toggle');
     if (dropdownToggle) {
-        dropdownToggle.addEventListener('click', function(e) {
+        dropdownToggle.addEventListener('click', function (e) {
             e.preventDefault();
             userInfo.classList.toggle('active');
         });
-        
+
         // إغلاق القائمة عند النقر خارجها
-        document.addEventListener('click', function(e) {
+        document.addEventListener('click', function (e) {
             if (!userInfo.contains(e.target)) {
                 userInfo.classList.remove('active');
             }
         });
     }
-    
+
     // زر تسجيل الدخول
     const loginBtn = userInfo.querySelector('#login-header-btn');
     if (loginBtn) {
-        loginBtn.addEventListener('click', function(e) {
+        loginBtn.addEventListener('click', function (e) {
             e.preventDefault();
-            
+
             // فتح نافذة تسجيل الدخول
             if (window.AuthSystem && typeof window.AuthSystem.showAuthModal === 'function') {
                 window.AuthSystem.showAuthModal();
             }
         });
     }
-    
+
     // الملف الشخصي
     const profileBtn = userInfo.querySelector('#profile-btn');
     if (profileBtn) {
-        profileBtn.addEventListener('click', function(e) {
+        profileBtn.addEventListener('click', function (e) {
             e.preventDefault();
             showBasicProfileModal(currentUser);
             userInfo.classList.remove('active');
         });
     }
-    
+
     // تغيير كلمة المرور
     const changePasswordBtn = userInfo.querySelector('#change-password-btn');
     if (changePasswordBtn) {
-        changePasswordBtn.addEventListener('click', function(e) {
+        changePasswordBtn.addEventListener('click', function (e) {
             e.preventDefault();
             showBasicChangePasswordModal();
             userInfo.classList.remove('active');
         });
     }
-    
+
     // تسجيل الخروج
     const logoutBtn = userInfo.querySelector('#logout-btn');
     if (logoutBtn) {
-        logoutBtn.addEventListener('click', function(e) {
+        logoutBtn.addEventListener('click', function (e) {
             e.preventDefault();
-            
+
             // تأكيد تسجيل الخروج
             if (confirm('هل أنت متأكد من رغبتك في تسجيل الخروج؟')) {
                 // تسجيل الخروج
@@ -394,7 +394,7 @@ function setupBasicUserMenuListeners(userInfo, currentUser) {
                         });
                 }
             }
-            
+
             userInfo.classList.remove('active');
         });
     }
@@ -406,16 +406,16 @@ function setupBasicUserMenuListeners(userInfo, currentUser) {
  */
 function showBasicProfileModal(currentUser) {
     if (!currentUser) return;
-    
+
     // التحقق من وجود النافذة
     let profileModal = document.getElementById('basic-profile-modal');
-    
+
     if (!profileModal) {
         // إنشاء عنصر النافذة
         profileModal = document.createElement('div');
         profileModal.id = 'basic-profile-modal';
         profileModal.className = 'modal-overlay';
-        
+
         profileModal.innerHTML = `
             <div class="modal">
                 <div class="modal-header">
@@ -450,54 +450,54 @@ function showBasicProfileModal(currentUser) {
                 </div>
             </div>
         `;
-        
+
         document.body.appendChild(profileModal);
-        
+
         // إضافة مستمعي الأحداث
         setupBasicModalListeners(profileModal);
-        
+
         // مستمع حدث لزر حفظ الملف الشخصي
         const saveProfileBtn = profileModal.querySelector('#save-profile-btn');
         if (saveProfileBtn) {
-            saveProfileBtn.addEventListener('click', function() {
+            saveProfileBtn.addEventListener('click', function () {
                 const fullNameInput = document.getElementById('profile-fullname');
-                
+
                 if (!fullNameInput) {
                     alert('خطأ: حقل الاسم غير موجود');
                     return;
                 }
-                
+
                 const fullName = fullNameInput.value.trim();
-                
+
                 if (!fullName) {
                     alert('يرجى إدخال الاسم الكامل');
                     return;
                 }
-                
+
                 // تحديث اسم العرض
                 if (window.firebase && firebase.auth().currentUser) {
                     firebase.auth().currentUser.updateProfile({
                         displayName: fullName
                     })
-                    .then(() => {
-                        alert('تم تحديث الملف الشخصي بنجاح');
-                        profileModal.classList.remove('active');
-                        
-                        // تحديث واجهة المستخدم
-                        if (currentUser) {
-                            currentUser.displayName = fullName;
-                            updateUserInfo();
-                        }
-                    })
-                    .catch(error => {
-                        console.error('خطأ في تحديث الملف الشخصي:', error);
-                        alert('حدث خطأ أثناء تحديث الملف الشخصي');
-                    });
+                        .then(() => {
+                            alert('تم تحديث الملف الشخصي بنجاح');
+                            profileModal.classList.remove('active');
+
+                            // تحديث واجهة المستخدم
+                            if (currentUser) {
+                                currentUser.displayName = fullName;
+                                updateUserInfo();
+                            }
+                        })
+                        .catch(error => {
+                            console.error('خطأ في تحديث الملف الشخصي:', error);
+                            alert('حدث خطأ أثناء تحديث الملف الشخصي');
+                        });
                 }
             });
         }
     }
-    
+
     // إظهار النافذة
     profileModal.classList.add('active');
 }
@@ -508,13 +508,13 @@ function showBasicProfileModal(currentUser) {
 function showBasicChangePasswordModal() {
     // التحقق من وجود النافذة
     let passwordModal = document.getElementById('basic-change-password-modal');
-    
+
     if (!passwordModal) {
         // إنشاء عنصر النافذة
         passwordModal = document.createElement('div');
         passwordModal.id = 'basic-change-password-modal';
         passwordModal.className = 'modal-overlay';
-        
+
         passwordModal.innerHTML = `
             <div class="modal">
                 <div class="modal-header">
@@ -560,16 +560,16 @@ function showBasicChangePasswordModal() {
                 </div>
             </div>
         `;
-        
+
         document.body.appendChild(passwordModal);
-        
+
         // إضافة مستمعي الأحداث
         setupBasicModalListeners(passwordModal);
-        
+
         // مستمعي أحداث لأزرار إظهار/إخفاء كلمة المرور
         const togglePasswordButtons = passwordModal.querySelectorAll('.toggle-password');
         togglePasswordButtons.forEach(button => {
-            button.addEventListener('click', function() {
+            button.addEventListener('click', function () {
                 const passwordInput = this.parentElement.querySelector('input');
                 if (passwordInput.type === 'password') {
                     passwordInput.type = 'text';
@@ -582,39 +582,39 @@ function showBasicChangePasswordModal() {
                 }
             });
         });
-        
+
         // مستمع حدث لزر حفظ كلمة المرور
         const savePasswordBtn = passwordModal.querySelector('#save-password-btn');
         if (savePasswordBtn) {
-            savePasswordBtn.addEventListener('click', function() {
+            savePasswordBtn.addEventListener('click', function () {
                 const currentPasswordInput = document.getElementById('current-password');
                 const newPasswordInput = document.getElementById('new-password');
                 const confirmNewPasswordInput = document.getElementById('confirm-new-password');
-                
+
                 if (!currentPasswordInput || !newPasswordInput || !confirmNewPasswordInput) {
                     alert('خطأ في النموذج: بعض الحقول المطلوبة غير موجودة');
                     return;
                 }
-                
+
                 const currentPassword = currentPasswordInput.value;
                 const newPassword = newPasswordInput.value;
                 const confirmNewPassword = confirmNewPasswordInput.value;
-                
+
                 if (!currentPassword || !newPassword || !confirmNewPassword) {
                     alert('يرجى إدخال جميع البيانات المطلوبة');
                     return;
                 }
-                
+
                 if (newPassword.length < 6) {
                     alert('يجب أن تكون كلمة المرور الجديدة 6 أحرف على الأقل');
                     return;
                 }
-                
+
                 if (newPassword !== confirmNewPassword) {
                     alert('كلمة المرور الجديدة وتأكيدها غير متطابقين');
                     return;
                 }
-                
+
                 // تغيير كلمة المرور
                 if (window.firebase && firebase.auth().currentUser) {
                     // الحصول على بيانات إعادة المصادقة
@@ -622,7 +622,7 @@ function showBasicChangePasswordModal() {
                         firebase.auth().currentUser.email,
                         currentPassword
                     );
-                    
+
                     // إعادة المصادقة
                     firebase.auth().currentUser.reauthenticateWithCredential(credential)
                         .then(() => {
@@ -635,22 +635,22 @@ function showBasicChangePasswordModal() {
                         })
                         .catch(error => {
                             console.error('خطأ في تغيير كلمة المرور:', error);
-                            
+
                             let errorMessage = 'حدث خطأ أثناء تغيير كلمة المرور';
-                            
+
                             if (error.code === 'auth/wrong-password') {
                                 errorMessage = 'كلمة المرور الحالية غير صحيحة';
                             } else if (error.code === 'auth/weak-password') {
                                 errorMessage = 'كلمة المرور الجديدة ضعيفة جداً';
                             }
-                            
+
                             alert(errorMessage);
                         });
                 }
             });
         }
     }
-    
+
     // إظهار النافذة
     passwordModal.classList.add('active');
 }
@@ -661,17 +661,17 @@ function showBasicChangePasswordModal() {
  */
 function setupBasicModalListeners(modal) {
     if (!modal) return;
-    
+
     // إغلاق النافذة عند النقر على زر الإغلاق
     const closeButtons = modal.querySelectorAll('.modal-close, .modal-close-btn');
     closeButtons.forEach(button => {
-        button.addEventListener('click', function() {
+        button.addEventListener('click', function () {
             modal.classList.remove('active');
         });
     });
-    
+
     // إغلاق النافذة عند النقر خارجها
-    modal.addEventListener('click', function(e) {
+    modal.addEventListener('click', function (e) {
         if (e.target === modal) {
             modal.classList.remove('active');
         }
@@ -705,27 +705,27 @@ function updateUserInfo() {
     if (window.AuthSystem && typeof window.AuthSystem.getUserInfo === 'function') {
         currentUser = window.AuthSystem.getUserInfo();
     }
-    
+
     if (!currentUser) return;
-    
+
     // تحديث اسم المستخدم في القائمة المنسدلة
     const userNameElements = document.querySelectorAll('.user-name');
     userNameElements.forEach(element => {
         element.textContent = currentUser.displayName || currentUser.email;
     });
-    
+
     // تحديث أيقونة المستخدم
     const userAvatars = document.querySelectorAll('.user-avatar:not(.large)');
     userAvatars.forEach(avatar => {
         avatar.textContent = (currentUser.displayName || currentUser.email).charAt(0).toUpperCase();
     });
-    
+
     // تحديث نوع المستخدم
     const userTypeElements = document.querySelectorAll('.user-type');
     userTypeElements.forEach(element => {
         element.textContent = getUserTypeLabel(currentUser.type);
     });
-    
+
     // إضافة فئة المستخدم لعنصر الجسم
     document.body.setAttribute('data-user-type', currentUser.type);
 }
@@ -740,24 +740,24 @@ function navigateToPage(pageName) {
     pages.forEach(page => {
         page.classList.remove('active');
     });
-    
+
     // إزالة التنشيط من جميع روابط التنقل
     const navLinks = document.querySelectorAll('.nav-link');
     navLinks.forEach(link => {
         link.classList.remove('active');
     });
-    
+
     // عرض الصفحة المطلوبة وتنشيط الرابط المناظر
     const targetPage = document.getElementById(`${pageName}-page`);
     const targetLink = document.querySelector(`.nav-link[data-page="${pageName}"]`);
-    
+
     if (targetPage) {
         targetPage.classList.add('active');
     } else {
         // إنشاء صفحة جديدة إذا لم تكن موجودة
         createPage(pageName);
     }
-    
+
     if (targetLink) {
         targetLink.classList.add('active');
     }
@@ -781,12 +781,12 @@ function createUserManagementPage() {
     if (document.getElementById('user-management-page')) {
         return;
     }
-    
+
     // إنشاء عنصر الصفحة
     const page = document.createElement('div');
     page.id = 'user-management-page';
     page.className = 'page user-management-page';
-    
+
     // محتوى الصفحة
     page.innerHTML = `
         <div class="header">
@@ -838,19 +838,19 @@ function createUserManagementPage() {
             </div>
         </div>
     `;
-    
+
     // إضافة الصفحة إلى المحتوى الرئيسي
     const mainContent = document.querySelector('.main-content');
     if (mainContent) {
         mainContent.appendChild(page);
-        
+
         // إضافة مستمعي الأحداث
         setupUserManagementListeners(page);
-        
+
         // تحميل بيانات المستخدمين
         loadUsers();
     }
-    
+
     // عرض الصفحة
     page.classList.add('active');
 }
@@ -861,35 +861,35 @@ function createUserManagementPage() {
  */
 function setupUserManagementListeners(page) {
     if (!page) return;
-    
+
     // زر إضافة مستخدم
     const addUserBtn = page.querySelector('#add-user-btn');
     if (addUserBtn) {
-        addUserBtn.addEventListener('click', function() {
+        addUserBtn.addEventListener('click', function () {
             showAddUserModal();
         });
     }
-    
+
     // زر تحديث قائمة المستخدمين
     const refreshUsersBtn = page.querySelector('#refresh-users-btn');
     if (refreshUsersBtn) {
-        refreshUsersBtn.addEventListener('click', function() {
+        refreshUsersBtn.addEventListener('click', function () {
             loadUsers();
         });
     }
-    
+
     // مربع البحث
     const searchInput = page.querySelector('.search-input');
     if (searchInput) {
-        searchInput.addEventListener('input', function() {
+        searchInput.addEventListener('input', function () {
             filterUsers(this.value);
         });
     }
-    
+
     // زر تبديل الشريط الجانبي
     const toggleSidebarBtn = page.querySelector('.toggle-sidebar');
     if (toggleSidebarBtn) {
-        toggleSidebarBtn.addEventListener('click', function() {
+        toggleSidebarBtn.addEventListener('click', function () {
             document.body.classList.toggle('sidebar-collapsed');
         });
     }
@@ -901,21 +901,21 @@ function setupUserManagementListeners(page) {
 function loadUsers() {
     const usersTableBody = document.querySelector('#users-table tbody');
     if (!usersTableBody) return;
-    
+
     // عرض رسالة التحميل
     usersTableBody.innerHTML = '<tr><td colspan="7" class="text-center">جارٍ تحميل بيانات المستخدمين...</td></tr>';
-    
+
     // الحصول على بيانات المستخدمين من قاعدة البيانات
     if (window.firebase && window.firebase.database) {
         firebase.database().ref('users').once('value')
             .then(snapshot => {
                 const users = [];
-                
+
                 // جمع المستخدمين
                 snapshot.forEach(childSnapshot => {
                     const userId = childSnapshot.key;
                     const userData = childSnapshot.val();
-                    
+
                     if (userData && userData.profile) {
                         users.push({
                             id: userId,
@@ -923,7 +923,7 @@ function loadUsers() {
                         });
                     }
                 });
-                
+
                 // عرض المستخدمين في الجدول
                 renderUsersTable(users);
             })
@@ -959,7 +959,7 @@ function loadUsers() {
                 emailVerified: false
             }
         ];
-        
+
         renderUsersTable(demoUsers);
     }
 }
@@ -971,22 +971,22 @@ function loadUsers() {
 function renderUsersTable(users) {
     const usersTableBody = document.querySelector('#users-table tbody');
     if (!usersTableBody) return;
-    
+
     if (!users || users.length === 0) {
         usersTableBody.innerHTML = '<tr><td colspan="7" class="text-center">لا يوجد مستخدمين</td></tr>';
         return;
     }
-    
+
     // تفريغ الجدول
     usersTableBody.innerHTML = '';
-    
+
     // إضافة المستخدمين
     users.forEach(user => {
         const row = document.createElement('tr');
         row.setAttribute('data-id', user.id);
         row.setAttribute('data-email', user.email);
         row.setAttribute('data-type', user.type || 'user');
-        
+
         // تنسيق التاريخ
         const createdDate = user.createdAt ? new Date(user.createdAt) : new Date();
         const formattedDate = createdDate.toLocaleDateString('ar-SA', {
@@ -994,7 +994,7 @@ function renderUsersTable(users) {
             month: 'short',
             day: 'numeric'
         });
-        
+
         // إنشاء محتوى الصف
         row.innerHTML = `
             <td>${user.id}</td>
@@ -1015,29 +1015,29 @@ function renderUsersTable(users) {
                 </button>
             </td>
         `;
-        
+
         // إضافة مستمعي الأحداث للأزرار
         const editBtn = row.querySelector('.edit-user-btn');
         if (editBtn) {
-            editBtn.addEventListener('click', function() {
+            editBtn.addEventListener('click', function () {
                 showEditUserModal(user);
             });
         }
-        
+
         const permissionsBtn = row.querySelector('.permissions-user-btn');
         if (permissionsBtn) {
-            permissionsBtn.addEventListener('click', function() {
+            permissionsBtn.addEventListener('click', function () {
                 showUserPermissionsModal(user);
             });
         }
-        
+
         const deleteBtn = row.querySelector('.delete-user-btn');
         if (deleteBtn) {
-            deleteBtn.addEventListener('click', function() {
+            deleteBtn.addEventListener('click', function () {
                 confirmDeleteUser(user);
             });
         }
-        
+
         usersTableBody.appendChild(row);
     });
 }
@@ -1049,11 +1049,11 @@ function renderUsersTable(users) {
 function filterUsers(searchText) {
     const rows = document.querySelectorAll('#users-table tbody tr');
     const searchLower = searchText.toLowerCase();
-    
+
     rows.forEach(row => {
         const email = row.getAttribute('data-email') || '';
         const name = row.querySelector('td:nth-child(2)').textContent || '';
-        
+
         if (email.toLowerCase().includes(searchLower) || name.toLowerCase().includes(searchLower)) {
             row.style.display = '';
         } else {
@@ -1074,13 +1074,13 @@ function filterUsers(searchText) {
 function showAddUserModal() {
     // التحقق من وجود النافذة
     let addUserModal = document.getElementById('add-user-modal');
-    
+
     if (!addUserModal) {
         // إنشاء نافذة إضافة المستخدم
         addUserModal = document.createElement('div');
         addUserModal.id = 'add-user-modal';
         addUserModal.className = 'modal-overlay';
-        
+
         addUserModal.innerHTML = `
             <div class="modal">
                 <div class="modal-header">
@@ -1133,16 +1133,16 @@ function showAddUserModal() {
                 </div>
             </div>
         `;
-        
+
         document.body.appendChild(addUserModal);
-        
+
         // إضافة مستمعي الأحداث
         setupBasicModalListeners(addUserModal);
-        
+
         // مستمع حدث لتبديل إظهار كلمة المرور
         const togglePasswordBtn = addUserModal.querySelector('.toggle-password');
         if (togglePasswordBtn) {
-            togglePasswordBtn.addEventListener('click', function() {
+            togglePasswordBtn.addEventListener('click', function () {
                 const passwordInput = this.parentElement.querySelector('input');
                 if (passwordInput.type === 'password') {
                     passwordInput.type = 'text';
@@ -1155,16 +1155,16 @@ function showAddUserModal() {
                 }
             });
         }
-        
+
         // مستمع حدث لزر حفظ المستخدم الجديد
         const saveNewUserBtn = addUserModal.querySelector('#save-new-user-btn');
         if (saveNewUserBtn) {
-            saveNewUserBtn.addEventListener('click', function() {
+            saveNewUserBtn.addEventListener('click', function () {
                 saveNewUser();
             });
         }
     }
-    
+
     // إظهار النافذة
     addUserModal.classList.add('active');
 }
@@ -1178,25 +1178,25 @@ function saveNewUser() {
     const password = document.getElementById('new-user-password').value;
     const type = document.getElementById('new-user-type').value;
     const sendVerification = document.getElementById('send-verification-email').checked;
-    
+
     // التحقق من البيانات
     if (!name || !email || !password || !type) {
         alert('يرجى إدخال جميع البيانات المطلوبة');
         return;
     }
-    
+
     if (password.length < 6) {
         alert('يجب أن تكون كلمة المرور 6 أحرف على الأقل');
         return;
     }
-    
+
     // إضافة المستخدم باستخدام Firebase
     if (window.firebase && firebase.auth) {
         // إنشاء المستخدم
         firebase.auth().createUserWithEmailAndPassword(email, password)
             .then(userCredential => {
                 const user = userCredential.user;
-                
+
                 // تحديث ملف المستخدم
                 return user.updateProfile({
                     displayName: name
@@ -1205,7 +1205,7 @@ function saveNewUser() {
                     if (sendVerification) {
                         user.sendEmailVerification();
                     }
-                    
+
                     // حفظ بيانات المستخدم في قاعدة البيانات
                     if (firebase.database) {
                         return firebase.database().ref(`users/${user.uid}`).set({
@@ -1229,7 +1229,7 @@ function saveNewUser() {
             .catch(error => {
                 console.error('خطأ في إضافة المستخدم:', error);
                 let errorMessage = 'حدث خطأ أثناء إضافة المستخدم';
-                
+
                 if (error.code === 'auth/email-already-in-use') {
                     errorMessage = 'البريد الإلكتروني مستخدم بالفعل';
                 } else if (error.code === 'auth/invalid-email') {
@@ -1237,7 +1237,7 @@ function saveNewUser() {
                 } else if (error.code === 'auth/weak-password') {
                     errorMessage = 'كلمة المرور ضعيفة جداً';
                 }
-                
+
                 alert(errorMessage);
             });
     } else {
@@ -1255,13 +1255,13 @@ function saveNewUser() {
 function showEditUserModal(user) {
     // التحقق من وجود النافذة
     let editUserModal = document.getElementById('edit-user-modal');
-    
+
     if (!editUserModal) {
         // إنشاء نافذة تعديل المستخدم
         editUserModal = document.createElement('div');
         editUserModal.id = 'edit-user-modal';
         editUserModal.className = 'modal-overlay';
-        
+
         editUserModal.innerHTML = `
             <div class="modal">
                 <div class="modal-header">
@@ -1306,28 +1306,28 @@ function showEditUserModal(user) {
                 </div>
             </div>
         `;
-        
+
         document.body.appendChild(editUserModal);
-        
+
         // إضافة مستمعي الأحداث
         setupBasicModalListeners(editUserModal);
-        
+
         // مستمع حدث لزر حفظ التغييرات
         const saveChangesBtn = editUserModal.querySelector('#save-user-changes-btn');
         if (saveChangesBtn) {
-            saveChangesBtn.addEventListener('click', function() {
+            saveChangesBtn.addEventListener('click', function () {
                 saveUserChanges();
             });
         }
     }
-    
+
     // ملء النموذج ببيانات المستخدم
     document.getElementById('edit-user-id').value = user.id;
     document.getElementById('edit-user-name').value = user.displayName || '';
     document.getElementById('edit-user-email').value = user.email;
     document.getElementById('edit-user-type').value = user.type || 'user';
     document.getElementById('edit-user-active').checked = user.isActive !== false;
-    
+
     // إظهار النافذة
     editUserModal.classList.add('active');
 }
@@ -1340,13 +1340,13 @@ function saveUserChanges() {
     const name = document.getElementById('edit-user-name').value.trim();
     const type = document.getElementById('edit-user-type').value;
     const isActive = document.getElementById('edit-user-active').checked;
-    
+
     // التحقق من البيانات
     if (!name || !type) {
         alert('يرجى إدخال جميع البيانات المطلوبة');
         return;
     }
-    
+
     // تحديث بيانات المستخدم في قاعدة البيانات
     if (window.firebase && firebase.database) {
         firebase.database().ref(`users/${userId}/profile`).update({
@@ -1355,21 +1355,21 @@ function saveUserChanges() {
             isActive: isActive,
             updatedAt: firebase.database.ServerValue.TIMESTAMP
         })
-        .then(() => {
-            // تحديث الصلاحيات إذا تغير نوع المستخدم
-            return firebase.database().ref(`users/${userId}/permissions`).set(
-                getDefaultPermissions(type)
-            );
-        })
-        .then(() => {
-            alert('تم تحديث بيانات المستخدم بنجاح');
-            document.getElementById('edit-user-modal').classList.remove('active');
-            loadUsers(); // تحديث قائمة المستخدمين
-        })
-        .catch(error => {
-            console.error('خطأ في تحديث بيانات المستخدم:', error);
-            alert('حدث خطأ أثناء تحديث بيانات المستخدم');
-        });
+            .then(() => {
+                // تحديث الصلاحيات إذا تغير نوع المستخدم
+                return firebase.database().ref(`users/${userId}/permissions`).set(
+                    getDefaultPermissions(type)
+                );
+            })
+            .then(() => {
+                alert('تم تحديث بيانات المستخدم بنجاح');
+                document.getElementById('edit-user-modal').classList.remove('active');
+                loadUsers(); // تحديث قائمة المستخدمين
+            })
+            .catch(error => {
+                console.error('خطأ في تحديث بيانات المستخدم:', error);
+                alert('حدث خطأ أثناء تحديث بيانات المستخدم');
+            });
     } else {
         // للعرض التوضيحي
         alert('تم تحديث بيانات المستخدم بنجاح (عرض توضيحي)');
@@ -1379,19 +1379,32 @@ function saveUserChanges() {
 }
 
 /**
- * عرض نافذة صلاحيات المستخدم
+ * عرض نافذة صلاحيات المستخدم المحسنة
  * @param {Object} user - بيانات المستخدم
  */
 function showUserPermissionsModal(user) {
+    // التحقق من صلاحية المستخدم لتعديل الصلاحيات
+    let currentUser = null;
+    if (window.AuthSystem && typeof window.AuthSystem.getUserInfo === 'function') {
+        currentUser = window.AuthSystem.getUserInfo();
+    }
+    
+    // التحقق من أن المستخدم لديه صلاحية تعديل المستخدمين
+    if (!currentUser || (currentUser.type !== 'admin' && 
+        !hasPermission('canCreateUsers') && !hasPermission('canEditUsers'))) {
+        alert('ليس لديك صلاحية لتعديل صلاحيات المستخدمين');
+        return;
+    }
+
     // التحقق من وجود النافذة
     let permissionsModal = document.getElementById('user-permissions-modal');
-    
+
     if (!permissionsModal) {
         // إنشاء نافذة صلاحيات المستخدم
         permissionsModal = document.createElement('div');
         permissionsModal.id = 'user-permissions-modal';
         permissionsModal.className = 'modal-overlay';
-        
+
         permissionsModal.innerHTML = `
             <div class="modal permissions-modal">
                 <div class="modal-header">
@@ -1408,7 +1421,7 @@ function showUserPermissionsModal(user) {
                     <div class="permissions-list">
                         <h4>الصلاحيات المتاحة</h4>
                         <div id="permissions-container">
-                            <!-- سيتم ملؤها ديناميكياً -->
+                            <!-- سيتم ملؤها ديناميكياً حسب الفئات -->
                         </div>
                     </div>
                 </div>
@@ -1422,45 +1435,65 @@ function showUserPermissionsModal(user) {
                 </div>
             </div>
         `;
-        
+
         document.body.appendChild(permissionsModal);
-        
+
         // إضافة مستمعي الأحداث
         setupBasicModalListeners(permissionsModal);
-        
+
         // مستمع حدث لزر إعادة التعيين
         const resetBtn = permissionsModal.querySelector('#reset-to-default-btn');
         if (resetBtn) {
-            resetBtn.addEventListener('click', function() {
+            resetBtn.addEventListener('click', function () {
                 resetPermissionsToDefault(user.type || 'user');
             });
         }
-        
+
         // مستمع حدث لزر حفظ الصلاحيات
         const savePermissionsBtn = permissionsModal.querySelector('#save-permissions-btn');
         if (savePermissionsBtn) {
-            savePermissionsBtn.addEventListener('click', function() {
-                saveUserPermissions(user.id);
+            savePermissionsBtn.addEventListener('click', function () {
+                // الحصول على معرف المستخدم المحدد من السمة المخفية
+                const permissionsContainer = document.getElementById('permissions-container');
+                const targetUserId = permissionsContainer.getAttribute('data-user-id');
+                
+                if (!targetUserId) {
+                    console.error('لم يتم العثور على معرف المستخدم المستهدف');
+                    alert('حدث خطأ: لم يتم تحديد المستخدم المستهدف');
+                    return;
+                }
+                
+                const permissions = collectPermissionsFromForm();
+
+                // حفظ الصلاحيات للمستخدم المحدد
+                saveUserPermissions(targetUserId, permissions)
+                    .then(() => {
+                        alert('تم حفظ الصلاحيات بنجاح');
+                        permissionsModal.classList.remove('active');
+                    })
+                    .catch(error => {
+                        console.error('خطأ في حفظ الصلاحيات:', error);
+                        alert('حدث خطأ أثناء حفظ الصلاحيات: ' + error.message);
+                    });
             });
         }
     }
-    
+
     // ملء معلومات المستخدم
     document.getElementById('permissions-user-name').textContent = user.displayName || 'غير محدد';
     document.getElementById('permissions-user-email').textContent = user.email;
     const userTypeSpan = document.getElementById('permissions-user-type');
     userTypeSpan.textContent = getUserTypeLabel(user.type || 'user');
     userTypeSpan.className = `badge ${user.type || 'user'}`;
-    
-    // تحميل صلاحيات المستخدم الحالية
+
+    // تحميل صلاحيات المستخدم المحدد
     loadUserPermissions(user.id);
-    
+
     // إظهار النافذة
     permissionsModal.classList.add('active');
 }
-
 /**
- * تحميل صلاحيات المستخدم
+ * تحميل صلاحيات المستخدم وعرضها حسب الفئات
  * @param {string} userId - معرف المستخدم
  */
 function loadUserPermissions(userId) {
@@ -1468,44 +1501,90 @@ function loadUserPermissions(userId) {
     if (!permissionsContainer) return;
 
     permissionsContainer.innerHTML = ''; // تفريغ الحاوية
+    
+    // إضافة معرف المستخدم كسمة مخفية للحاوية لاستخدامه لاحقاً عند الحفظ
+    permissionsContainer.setAttribute('data-user-id', userId);
 
-    const permissionsList = [
-        { id: 'canAddInvestors', label: 'إضافة مستثمرين' },
-        { id: 'canEditInvestors', label: 'تعديل المستثمرين' },
-        { id: 'canDeleteInvestors', label: 'حذف المستثمرين' },
-        { id: 'canProcessDeposits', label: 'معالجة الإيداعات' },
-        { id: 'canProcessWithdrawals', label: 'معالجة السحوبات' },
-        { id: 'canPayProfits', label: 'دفع الأرباح' },
-        { id: 'canManageSettings', label: 'إدارة الإعدادات' },
-        { id: 'canExportData', label: 'تصدير البيانات' },
-        { id: 'canImportData', label: 'استيراد البيانات' },
-        { id: 'canCreateBackup', label: 'إنشاء نسخ احتياطية' },
-        { id: 'canRestoreBackup', label: 'استعادة النسخ الاحتياطية' },
-        { id: 'canCreateUsers', label: 'إنشاء مستخدمين' },
-        { id: 'canDeleteUsers', label: 'حذف المستخدمين' },
-        { id: 'canViewReports', label: 'عرض التقارير' }
-    ];
+    // إذا لم تكن الصلاحيات المتاحة محددة، استخدم القائمة البسيطة
+    if (!window.AVAILABLE_PERMISSIONS || !window.PERMISSIONS_CATEGORIES) {
+        // القائمة البسيطة للصلاحيات
+        const permissionsList = [
+            { id: 'canAddInvestors', label: 'إضافة مستثمرين' },
+            { id: 'canEditInvestors', label: 'تعديل المستثمرين' },
+            { id: 'canDeleteInvestors', label: 'حذف المستثمرين' },
+            { id: 'canProcessDeposits', label: 'معالجة الإيداعات' },
+            { id: 'canProcessWithdrawals', label: 'معالجة السحوبات' },
+            { id: 'canPayProfits', label: 'دفع الأرباح' },
+            { id: 'canManageSettings', label: 'إدارة الإعدادات' },
+            { id: 'canExportData', label: 'تصدير البيانات' },
+            { id: 'canImportData', label: 'استيراد البيانات' },
+            { id: 'canCreateBackup', label: 'إنشاء نسخ احتياطية' },
+            { id: 'canRestoreBackup', label: 'استعادة النسخ الاحتياطية' },
+            { id: 'canCreateUsers', label: 'إنشاء مستخدمين' },
+            { id: 'canDeleteUsers', label: 'حذف المستخدمين' },
+            { id: 'canViewReports', label: 'عرض التقارير' }
+        ];
 
-    permissionsList.forEach(permission => {
-        const permissionItem = document.createElement('div');
-        permissionItem.className = 'permission-item';
-        permissionItem.innerHTML = `
-            <label>
-                <input type="checkbox" id="perm-${permission.id}">
-                ${permission.label}
-            </label>
-        `;
-        permissionsContainer.appendChild(permissionItem);
-    });
+        permissionsList.forEach(permission => {
+            const permissionItem = document.createElement('div');
+            permissionItem.className = 'permission-item';
+            permissionItem.innerHTML = `
+                <label>
+                    <input type="checkbox" id="perm-${permission.id}" data-permission="${permission.id}">
+                    ${permission.label}
+                </label>
+            `;
+            permissionsContainer.appendChild(permissionItem);
+        });
+    } else {
+        // عرض الصلاحيات حسب الفئات
+        const categories = window.PERMISSIONS_CATEGORIES;
 
+        // إنشاء قسم لكل فئة
+        for (const [categoryId, categoryName] of Object.entries(categories)) {
+            // الحصول على صلاحيات هذه الفئة
+            const categoryPermissions = window.AVAILABLE_PERMISSIONS.filter(
+                permission => permission.category === categoryId
+            );
+
+            if (categoryPermissions.length === 0) continue;
+
+            // إنشاء مجموعة الصلاحيات
+            const categoryGroup = document.createElement('div');
+            categoryGroup.className = 'permission-group';
+            categoryGroup.innerHTML = `<h5>${categoryName}</h5>`;
+
+            // إضافة عناصر الصلاحيات
+            categoryPermissions.forEach(permission => {
+                const permissionItem = document.createElement('div');
+                permissionItem.className = 'permission-item';
+                permissionItem.innerHTML = `
+                    <label>
+                        <input type="checkbox" id="perm-${permission.id}" data-permission="${permission.id}">
+                        ${permission.label}
+                    </label>
+                `;
+                categoryGroup.appendChild(permissionItem);
+            });
+
+            permissionsContainer.appendChild(categoryGroup);
+        }
+    }
+
+    // تحميل الصلاحيات الحالية من قاعدة البيانات
     if (window.firebase && firebase.database) {
+        // تأكد من تحميل صلاحيات المستخدم المحدد (وليس المستخدم الحالي)
         firebase.database().ref(`users/${userId}/permissions`).once('value')
             .then(snapshot => {
+                // التأكد من وجود كائن الصلاحيات
                 const permissions = snapshot.val() || {};
-                permissionsList.forEach(permission => {
-                    const checkbox = document.getElementById(`perm-${permission.id}`);
-                    if (checkbox) {
-                        checkbox.checked = permissions[permission.id] || false;
+
+                // تعيين حالة خانات الاختيار
+                const checkboxes = document.querySelectorAll('[id^="perm-"]');
+                checkboxes.forEach(checkbox => {
+                    const permissionId = checkbox.getAttribute('data-permission');
+                    if (permissionId) {
+                        checkbox.checked = permissions[permissionId] || false;
                     }
                 });
             })
@@ -1513,6 +1592,18 @@ function loadUserPermissions(userId) {
                 console.error('خطأ في تحميل صلاحيات المستخدم:', error);
                 alert('حدث خطأ أثناء تحميل الصلاحيات');
             });
+    } else {
+        // للعرض التوضيحي
+        const demoPermissions = getDefaultPermissions(user.type || 'user');
+
+        // تعيين حالة خانات الاختيار
+        const checkboxes = document.querySelectorAll('[id^="perm-"]');
+        checkboxes.forEach(checkbox => {
+            const permissionId = checkbox.getAttribute('data-permission');
+            if (permissionId) {
+                checkbox.checked = demoPermissions[permissionId] || false;
+            }
+        });
     }
 }
 
@@ -1567,12 +1658,12 @@ function resetPermissionsToDefault(userType) {
  */
 function confirmDeleteUser(user) {
     // التحقق من أن المستخدم ليس المستخدم الحالي
-    if (window.firebase && firebase.auth().currentUser && 
+    if (window.firebase && firebase.auth().currentUser &&
         firebase.auth().currentUser.uid === user.id) {
         alert('لا يمكنك حذف حسابك الخاص');
         return;
     }
-    
+
     // التحقق من أن المستخدم ليس المسؤول الوحيد
     if (user.type === 'admin') {
         // التحقق من عدد المسؤولين
@@ -1581,17 +1672,17 @@ function confirmDeleteUser(user) {
                 alert('لا يمكن حذف المسؤول الوحيد في النظام');
                 return;
             }
-            
+
             // متابعة عملية الحذف
             proceedWithDeletion();
         });
     } else {
         proceedWithDeletion();
     }
-    
+
     function proceedWithDeletion() {
         const confirmMessage = `هل أنت متأكد من رغبتك في حذف المستخدم "${user.displayName || user.email}"؟\n\nهذا الإجراء لا يمكن التراجع عنه.`;
-        
+
         if (confirm(confirmMessage)) {
             deleteUser(user.id);
         }
@@ -1607,14 +1698,14 @@ function checkAdminCount() {
         return firebase.database().ref('users').once('value')
             .then(snapshot => {
                 let adminCount = 0;
-                
+
                 snapshot.forEach(childSnapshot => {
                     const userData = childSnapshot.val();
                     if (userData.profile && userData.profile.type === 'admin') {
                         adminCount++;
                     }
                 });
-                
+
                 return adminCount;
             });
     } else {
@@ -1634,7 +1725,7 @@ function deleteUser(userId) {
             .then(() => {
                 // ملاحظة: لا يمكن حذف حساب المستخدم من Firebase Auth مباشرة
                 // يتطلب ذلك استخدام Firebase Admin SDK من الخادم
-                
+
                 alert('تم حذف بيانات المستخدم بنجاح');
                 loadUsers(); // تحديث قائمة المستخدمين
             })
@@ -1645,7 +1736,7 @@ function deleteUser(userId) {
     } else {
         // للعرض التوضيحي
         alert('تم حذف المستخدم بنجاح (عرض توضيحي)');
-        
+
         // حذف الصف من الجدول مباشرة للعرض
         const row = document.querySelector(`#users-table tr[data-id="${userId}"]`);
         if (row) {
@@ -1840,12 +1931,12 @@ function addUserManagementStyles() {
             }
         }
     `;
-    
+
     document.head.appendChild(styleElement);
 }
 
 // استدعاء إضافة الأنماط عند تحميل الصفحة
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     addUserManagementStyles();
 });
 
@@ -1857,7 +1948,7 @@ function refreshUserInterface() {
     } else {
         updateUserInfo();
     }
-    
+
     // تحديث عرض/إخفاء العناصر حسب الصلاحيات
     updatePermissionBasedUI();
 }
@@ -1868,9 +1959,9 @@ function updatePermissionBasedUI() {
     if (window.AuthSystem && typeof window.AuthSystem.getUserInfo === 'function') {
         currentUser = window.AuthSystem.getUserInfo();
     }
-    
+
     if (!currentUser || !currentUser.permissions) return;
-    
+
     // إظهار/إخفاء عناصر القائمة الجانبية حسب الصلاحيات
     const navItems = document.querySelectorAll('.nav-item[data-permission]');
     navItems.forEach(item => {
@@ -1881,7 +1972,7 @@ function updatePermissionBasedUI() {
             item.style.display = 'none';
         }
     });
-    
+
     // إظهار/إخفاء أزرار الإجراءات حسب الصلاحيات
     const actionButtons = {
         '.delete-investor-btn': 'canDeleteInvestors',
@@ -1890,7 +1981,7 @@ function updatePermissionBasedUI() {
         '.backup-btn': 'canCreateBackup',
         '.restore-btn': 'canRestoreBackup'
     };
-    
+
     for (const [selector, permission] of Object.entries(actionButtons)) {
         const buttons = document.querySelectorAll(selector);
         buttons.forEach(button => {
@@ -1904,14 +1995,14 @@ function updatePermissionBasedUI() {
 }
 
 // تحديث صلاحيات المستخدم بعد تسجيل الدخول
-document.addEventListener('userLoggedIn', function(event) {
+document.addEventListener('userLoggedIn', function (event) {
     refreshUserInterface();
 });
 
 // إضافة دعم لأحداث مخصصة
 if (window.AuthSystem) {
     const originalLogin = window.AuthSystem.login;
-    window.AuthSystem.login = function(...args) {
+    window.AuthSystem.login = function (...args) {
         return originalLogin.apply(this, args).then(result => {
             // إطلاق حدث مخصص بعد تسجيل الدخول
             const loginEvent = new CustomEvent('userLoggedIn', { detail: result });
@@ -1919,9 +2010,9 @@ if (window.AuthSystem) {
             return result;
         });
     };
-    
+
     const originalLogout = window.AuthSystem.logout;
-    window.AuthSystem.logout = function(...args) {
+    window.AuthSystem.logout = function (...args) {
         return originalLogout.apply(this, args).then(result => {
             // إطلاق حدث مخصص بعد تسجيل الخروج
             const logoutEvent = new CustomEvent('userLoggedOut');
@@ -1962,21 +2053,21 @@ function loadSingleUser(userId) {
 function updateUserRow(userId) {
     loadSingleUser(userId).then(user => {
         if (!user) return;
-        
+
         // البحث عن الصف
         const row = document.querySelector(`#users-table tr[data-id="${userId}"]`);
         if (!row) return;
-        
+
         // تحديث محتوى الصف
         row.querySelector('td:nth-child(2)').textContent = user.displayName || 'غير محدد';
         row.querySelector('td:nth-child(3)').textContent = user.email;
-        
+
         const typeCell = row.querySelector('td:nth-child(4)');
         typeCell.innerHTML = `<span class="badge ${user.type || 'user'}">${getUserTypeLabel(user.type || 'user')}</span>`;
-        
+
         const statusCell = row.querySelector('td:nth-child(6)');
-        statusCell.innerHTML = user.emailVerified ? 
-            '<span class="badge success">موثق</span>' : 
+        statusCell.innerHTML = user.emailVerified ?
+            '<span class="badge success">موثق</span>' :
             '<span class="badge warning">غير موثق</span>';
     });
 }
@@ -1992,7 +2083,7 @@ function getErrorMessage(code) {
         'auth/too-many-requests': 'تم تجاوز عدد المحاولات المسموح بها، يرجى المحاولة لاحقاً',
         'auth/network-request-failed': 'خطأ في الاتصال بالإنترنت'
     };
-    
+
     return errors[code] || 'حدث خطأ غير متوقع';
 }
 
@@ -2003,7 +2094,7 @@ function setupRealtimeUsersListener() {
             const userId = snapshot.key;
             updateUserRow(userId);
         });
-        
+
         firebase.database().ref('users').on('child_removed', (snapshot) => {
             const userId = snapshot.key;
             const row = document.querySelector(`#users-table tr[data-id="${userId}"]`);
@@ -2011,7 +2102,7 @@ function setupRealtimeUsersListener() {
                 row.remove();
             }
         });
-        
+
         firebase.database().ref('users').on('child_added', (snapshot) => {
             // تحديث الجدول عند إضافة مستخدم جديد
             loadUsers();
@@ -2020,20 +2111,148 @@ function setupRealtimeUsersListener() {
 }
 
 // بدء مراقب التغييرات عند تحميل الصفحة
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     setupRealtimeUsersListener();
 });
 
-// دالة للتحقق من صلاحية المستخدم الحالي
+
+/**
+ * التحقق من صلاحية المستخدم الحالي
+ * @param {string} permission - الصلاحية المطلوبة
+ * @returns {boolean} - إذا كان المستخدم لديه الصلاحية
+ */
 function hasPermission(permission) {
     let currentUser = null;
     if (window.AuthSystem && typeof window.AuthSystem.getUserInfo === 'function') {
         currentUser = window.AuthSystem.getUserInfo();
     }
-    
-    return currentUser && currentUser.permissions && currentUser.permissions[permission];
+
+    // إذا كان نوع المستخدم هو مسؤول، يكون لديه جميع الصلاحيات افتراضياً
+    if (currentUser && currentUser.type === 'admin') {
+        return true;
+    }
+
+    // التحقق من وجود الصلاحية في كائن صلاحيات المستخدم
+    return currentUser && 
+           currentUser.permissions && 
+           typeof currentUser.permissions[permission] !== 'undefined' && 
+           currentUser.permissions[permission] === true;
 }
 
+
+
+/**
+ * إضافة تسجيل لعمليات الصلاحيات
+ * @param {string} action - الإجراء
+ * @param {string} targetUserId - معرف المستخدم المستهدف
+ * @param {Object} data - بيانات إضافية
+ */
+function logPermissionAction(action, targetUserId, data = {}) {
+    const currentUser = window.AuthSystem && typeof window.AuthSystem.getUserInfo === 'function' ? 
+                       window.AuthSystem.getUserInfo() : { id: 'unknown' };
+    
+    const logEntry = {
+        action: action,
+        performedBy: currentUser.id,
+        targetUser: targetUserId,
+        timestamp: new Date().toISOString(),
+        data: data
+    };
+    
+    console.log('تسجيل إجراء الصلاحيات:', logEntry);
+    
+    // حفظ السجل في قاعدة البيانات (اختياري)
+    if (window.firebase && firebase.database) {
+        firebase.database().ref('permissions_log').push(logEntry)
+            .catch(error => {
+                console.error('خطأ في تسجيل إجراء الصلاحيات:', error);
+            });
+    }
+}
+
+
+
+/**
+ * دالة محسنة لإضافة وتحرير المستخدمين مع الصلاحيات
+ * @param {string} userId - معرف المستخدم
+ * @param {Object} userData - بيانات المستخدم
+ * @param {Object} userPermissions - صلاحيات المستخدم
+ * @returns {Promise} - وعد بنتيجة الحفظ
+ */
+function updateUserWithPermissions(userId, userData, userPermissions) {
+    if (!userId || !userData) {
+        return Promise.reject(new Error('معرف المستخدم أو البيانات غير صالحة'));
+    }
+    
+    // التأكد من أن المستخدم الحالي هو مسؤول
+    const currentUser = window.AuthSystem && typeof window.AuthSystem.getUserInfo === 'function' ? 
+                       window.AuthSystem.getUserInfo() : null;
+    
+    if (!currentUser || currentUser.type !== 'admin') {
+        return Promise.reject(new Error('فقط المسؤول يمكنه تحديث المستخدمين'));
+    }
+    
+    // تنظيف الصلاحيات
+    const sanitizedPermissions = sanitizePermissions(userPermissions);
+    
+    if (window.firebase && firebase.database) {
+        // استخدام تحديث متعدد المسارات لضمان اتساق البيانات
+        const updates = {};
+        
+        // تحديث بيانات المستخدم
+        updates[`users/${userId}/profile`] = userData;
+        
+        // تحديث صلاحيات المستخدم
+        updates[`users/${userId}/permissions`] = sanitizedPermissions;
+        
+        // تنفيذ التحديث المتعدد
+        return firebase.database().ref().update(updates)
+            .then(() => {
+                logPermissionAction('update_user_with_permissions', userId, {
+                    userData: userData,
+                    permissions: sanitizedPermissions
+                });
+                return true;
+            });
+    } else {
+        // للعرض التوضيحي
+        console.log(`[عرض توضيحي] تم تحديث المستخدم مع الصلاحيات: ${userId}`);
+        return Promise.resolve();
+    }
+}
+
+
+
+/**
+ * تحسين تنسيق السجلات وإضافة تفاصيل أكثر للتسجيل
+ * @param {string} operation - العملية
+ * @param {string} targetUserId - معرف المستخدم المستهدف
+ * @param {Object} data - البيانات
+ */
+function logWithDetails(operation, targetUserId, data = {}) {
+    const now = new Date();
+    const timestamp = now.toISOString();
+    const formattedTime = now.toLocaleTimeString('ar-SA');
+    
+    // الحصول على بيانات المستخدم الحالي
+    let currentUser = { id: 'unknown', displayName: 'غير معروف' };
+    if (window.AuthSystem && typeof window.AuthSystem.getUserInfo === 'function') {
+        const userInfo = window.AuthSystem.getUserInfo();
+        if (userInfo) {
+            currentUser = {
+                id: userInfo.uid || userInfo.id || 'unknown',
+                displayName: userInfo.displayName || userInfo.email || 'غير معروف'
+            };
+        }
+    }
+    
+    console.group(`🔐 عملية صلاحيات: ${operation} | ${formattedTime}`);
+    console.log(`⏱️ التوقيت: ${timestamp}`);
+    console.log(`👤 المنفذ: ${currentUser.displayName} (${currentUser.id})`);
+    console.log(`🎯 المستهدف: ${targetUserId}`);
+    console.log('📊 البيانات:', data);
+    console.groupEnd();
+}
 // تحديث عرض الأزرار حسب الصلاحيات
 function updateActionButtonsVisibility() {
     // إظهار/إخفاء زر إضافة مستخدم
@@ -2041,7 +2260,7 @@ function updateActionButtonsVisibility() {
     if (addUserBtn) {
         addUserBtn.style.display = hasPermission('canCreateUsers') ? '' : 'none';
     }
-    
+
     // إظهار/إخفاء أزرار الحذف في الجدول
     const deleteButtons = document.querySelectorAll('.delete-user-btn');
     deleteButtons.forEach(btn => {
@@ -2051,7 +2270,7 @@ function updateActionButtonsVisibility() {
 
 // استدعاء دالة تحديث الأزرار عند تحميل المستخدمين
 const originalLoadUsers = loadUsers;
-loadUsers = function() {
+loadUsers = function () {
     originalLoadUsers().then(() => {
         updateActionButtonsVisibility();
     });
@@ -2078,16 +2297,16 @@ function promptAdminCredentials(callback) {
         alert(`تم تجاوز عدد المحاولات المسموح بها. يرجى المحاولة بعد ${remainingTime}`);
         return;
     }
-    
+
     // التحقق من وجود النافذة
     let adminPromptModal = document.getElementById('admin-prompt-modal');
-    
+
     if (!adminPromptModal) {
         // إنشاء نافذة إدخال بيانات المسؤول
         adminPromptModal = document.createElement('div');
         adminPromptModal.id = 'admin-prompt-modal';
         adminPromptModal.className = 'modal-overlay';
-        
+
         adminPromptModal.innerHTML = `
             <div class="modal admin-prompt-modal">
                 <div class="modal-header">
@@ -2127,19 +2346,19 @@ function promptAdminCredentials(callback) {
                 </div>
             </div>
         `;
-        
+
         document.body.appendChild(adminPromptModal);
-        
+
         // إضافة الأنماط المطلوبة
         addAdminPromptStyles();
-        
+
         // إضافة مستمعي الأحداث
         setupBasicModalListeners(adminPromptModal);
-        
+
         // مستمع حدث لتبديل إظهار كلمة المرور
         const togglePasswordBtn = adminPromptModal.querySelector('.toggle-password');
         if (togglePasswordBtn) {
-            togglePasswordBtn.addEventListener('click', function() {
+            togglePasswordBtn.addEventListener('click', function () {
                 const passwordInput = this.parentElement.querySelector('input');
                 if (passwordInput.type === 'password') {
                     passwordInput.type = 'text';
@@ -2152,38 +2371,38 @@ function promptAdminCredentials(callback) {
                 }
             });
         }
-        
+
         // مستمع حدث للنموذج
         const form = adminPromptModal.querySelector('#admin-credentials-form');
         if (form) {
-            form.addEventListener('submit', function(e) {
+            form.addEventListener('submit', function (e) {
                 e.preventDefault();
                 verifyAdminCredentials(callback);
             });
         }
-        
+
         // مستمع حدث لزر التحقق
         const verifyAdminBtn = adminPromptModal.querySelector('#verify-admin-btn');
         if (verifyAdminBtn) {
-            verifyAdminBtn.addEventListener('click', function() {
+            verifyAdminBtn.addEventListener('click', function () {
                 verifyAdminCredentials(callback);
             });
         }
-        
+
         // مستمع حدث لإغلاق النافذة بزر ESC
-        document.addEventListener('keydown', function(e) {
+        document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape' && adminPromptModal.classList.contains('active')) {
                 closeAdminPrompt();
             }
         });
     }
-    
+
     // تحديث عدد المحاولات المتبقية
     updateRemainingAttempts();
-    
+
     // إظهار النافذة
     adminPromptModal.classList.add('active');
-    
+
     // تركيز على حقل اسم المسؤول
     setTimeout(() => {
         const usernameInput = document.getElementById('admin-username');
@@ -2199,51 +2418,51 @@ function promptAdminCredentials(callback) {
 function verifyAdminCredentials(callback) {
     const username = document.getElementById('admin-username').value.trim();
     const password = document.getElementById('admin-password').value;
-    
+
     if (!username || !password) {
         showErrorMessage('يرجى إدخال اسم المسؤول والرمز السري');
         return;
     }
-    
+
     // التحقق من بيانات المسؤول
     // في بيئة الإنتاج، يجب استخدام API آمن للتحقق
     validateAdminCredentials(username, password).then(isValid => {
         if (isValid) {
             // إعادة تعيين عدد المحاولات
             loginAttempts = 0;
-            
+
             // إخفاء رسالة الخطأ
             hideErrorMessage();
-            
+
             // إغلاق النافذة
             closeAdminPrompt();
-            
+
             // تنفيذ رد الاتصال (فتح صفحة إدارة المستخدمين)
             if (typeof callback === 'function') {
                 callback();
             }
-            
+
             // حفظ جلسة التحقق لفترة محدودة
             saveAdminSession();
         } else {
             // زيادة عدد المحاولات الفاشلة
             loginAttempts++;
-            
+
             // تحديث عدد المحاولات المتبقية
             updateRemainingAttempts();
-            
+
             if (loginAttempts >= MAX_ATTEMPTS) {
                 // قفل الحساب مؤقتاً
                 lockAccount();
                 showErrorMessage('تم قفل الحساب مؤقتاً بسبب تجاوز عدد المحاولات المسموح بها');
-                
+
                 // إغلاق النافذة بعد فترة
                 setTimeout(() => {
                     closeAdminPrompt();
                 }, 3000);
             } else {
                 showErrorMessage('اسم المسؤول أو الرمز السري غير صحيح');
-                
+
                 // مسح حقل كلمة المرور
                 document.getElementById('admin-password').value = '';
                 document.getElementById('admin-password').focus();
@@ -2269,7 +2488,7 @@ function validateAdminCredentials(username, password) {
                 'admin': '1234', // يجب تخزين كلمات المرور بشكل مشفر
                 'superadmin': 'Admin@123'
             };
-            
+
             resolve(validCredentials[username] === password);
         }, 500);
     });
@@ -2282,11 +2501,11 @@ function closeAdminPrompt() {
     const adminPromptModal = document.getElementById('admin-prompt-modal');
     if (adminPromptModal) {
         adminPromptModal.classList.remove('active');
-        
+
         // مسح الحقول
         document.getElementById('admin-username').value = '';
         document.getElementById('admin-password').value = '';
-        
+
         // إخفاء رسالة الخطأ
         hideErrorMessage();
     }
@@ -2297,18 +2516,18 @@ function closeAdminPrompt() {
  */
 function showErrorMessage(message) {
     let errorDiv = document.getElementById('admin-error-message');
-    
+
     if (!errorDiv) {
         errorDiv = document.createElement('div');
         errorDiv.id = 'admin-error-message';
         errorDiv.className = 'error-message';
-        
+
         const form = document.getElementById('admin-credentials-form');
         if (form) {
             form.appendChild(errorDiv);
         }
     }
-    
+
     errorDiv.textContent = message;
     errorDiv.classList.add('active');
 }
@@ -2339,12 +2558,12 @@ function updateRemainingAttempts() {
 function lockAccount() {
     const lockoutUntil = Date.now() + LOCKOUT_TIME;
     localStorage.setItem('adminLockoutUntil', lockoutUntil);
-    
+
     // إلغاء المؤقت السابق إذا كان موجوداً
     if (lockoutTimer) {
         clearTimeout(lockoutTimer);
     }
-    
+
     // تعيين مؤقت لإلغاء القفل تلقائياً
     lockoutTimer = setTimeout(() => {
         localStorage.removeItem('adminLockoutUntil');
@@ -2478,19 +2697,19 @@ function addAdminPromptStyles() {
             animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
         }
     `;
-    
+
     document.head.appendChild(styleElement);
 }
 
 // تعديل مستمع حدث زر إدارة المستخدمين
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const userManagementItem = document.querySelector('.nav-item.user-management');
     if (userManagementItem) {
         const userManagementLink = userManagementItem.querySelector('.nav-link');
         if (userManagementLink) {
-            userManagementLink.addEventListener('click', function(e) {
+            userManagementLink.addEventListener('click', function (e) {
                 e.preventDefault();
-                
+
                 // التحقق أولاً من صلاحية الجلسة
                 if (isAdminSessionValid()) {
                     navigateToPage('user-management');
@@ -2502,9 +2721,9 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     }
-    
+
     // إضافة مستمع للنقر المزدوج كاختصار للمسؤولين
-    document.addEventListener('dblclick', function(e) {
+    document.addEventListener('dblclick', function (e) {
         if (e.ctrlKey && e.shiftKey) {
             promptAdminCredentials(() => {
                 navigateToPage('user-management');
@@ -2522,12 +2741,12 @@ document.addEventListener('click', updateLastActivity);
 
 function updateLastActivity() {
     lastActivity = Date.now();
-    
+
     // تجديد الجلسة إذا كان المستخدم نشطاً
     if (isAdminSessionValid()) {
         const currentExpiry = parseInt(sessionStorage.getItem('adminSessionExpiry'));
         const timeSinceActivity = Date.now() - lastActivity;
-        
+
         if (timeSinceActivity < 5 * 60 * 1000) { // آخر نشاط منذ أقل من 5 دقائق
             const newExpiry = Date.now() + 30 * 60 * 1000; // تمديد لـ 30 دقيقة
             if (newExpiry > currentExpiry) {
@@ -2538,11 +2757,11 @@ function updateLastActivity() {
 }
 
 // إضافة حماية للمسارات المباشرة
-window.addEventListener('hashchange', function() {
+window.addEventListener('hashchange', function () {
     if (window.location.hash === '#user-management' && !isAdminSessionValid()) {
         // إعادة التوجيه للصفحة الرئيسية
         window.location.hash = '';
-        
+
         // عرض نافذة التحقق
         promptAdminCredentials(() => {
             navigateToPage('user-management');
@@ -2567,18 +2786,17 @@ let adminCredentials = {
 function showChangeAdminCredentialsModal() {
     // التحقق من وجود النافذة
     let changeCredentialsModal = document.getElementById('change-admin-credentials-modal');
-    
+
     if (!changeCredentialsModal) {
         // إنشاء نافذة تغيير بيانات المسؤول
         changeCredentialsModal = document.createElement('div');
         changeCredentialsModal.id = 'change-admin-credentials-modal';
         changeCredentialsModal.className = 'modal-overlay';
-        
+
         changeCredentialsModal.innerHTML = `
             <div class="modal change-credentials-modal">
                 <div class="modal-header">
                     <h3 class="modal-title">تغيير بيانات المسؤول</h3>
-                    <button class="modal-close">&times;</button>
                 </div>
                 <div class="modal-body">
                     <div class="security-notice warning">
@@ -2647,24 +2865,23 @@ function showChangeAdminCredentialsModal() {
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-outline modal-close-btn">إلغاء</button>
                     <button class="btn btn-primary" id="save-admin-credentials-btn">حفظ التغييرات</button>
                 </div>
             </div>
         `;
-        
+
         document.body.appendChild(changeCredentialsModal);
-        
+
         // إضافة الأنماط المطلوبة
         addChangeCredentialsStyles();
-        
+
         // إضافة مستمعي الأحداث
-        setupBasicModalListeners(changeCredentialsModal);
-        
+        setupBasicModalListeners(changeCredentialsModal, false); // منع الإغلاق بالنقر خارج النافذة
+
         // مستمعي أحداث لأزرار تبديل إظهار كلمة المرور
         const togglePasswordButtons = changeCredentialsModal.querySelectorAll('.toggle-password');
         togglePasswordButtons.forEach(button => {
-            button.addEventListener('click', function() {
+            button.addEventListener('click', function () {
                 const passwordInput = this.parentElement.querySelector('input');
                 if (passwordInput.type === 'password') {
                     passwordInput.type = 'text';
@@ -2677,34 +2894,34 @@ function showChangeAdminCredentialsModal() {
                 }
             });
         });
-        
+
         // مستمع لقياس قوة كلمة المرور
         const newPasswordInput = changeCredentialsModal.querySelector('#new-admin-password');
         if (newPasswordInput) {
             newPasswordInput.addEventListener('input', checkAdminPasswordStrength);
         }
-        
+
         // مستمع حدث لزر حفظ التغييرات
         const saveCredentialsBtn = changeCredentialsModal.querySelector('#save-admin-credentials-btn');
         if (saveCredentialsBtn) {
-            saveCredentialsBtn.addEventListener('click', function() {
+            saveCredentialsBtn.addEventListener('click', function () {
                 saveAdminCredentials();
             });
         }
-        
+
         // مستمع للنموذج
         const form = changeCredentialsModal.querySelector('#change-credentials-form');
         if (form) {
-            form.addEventListener('submit', function(e) {
+            form.addEventListener('submit', function (e) {
                 e.preventDefault();
                 saveAdminCredentials();
             });
         }
     }
-    
+
     // إظهار النافذة
     changeCredentialsModal.classList.add('active');
-    
+
     // التركيز على حقل كلمة المرور الحالية
     setTimeout(() => {
         const currentPasswordInput = document.getElementById('current-admin-password');
@@ -2722,13 +2939,13 @@ function saveAdminCredentials() {
     const newUsername = document.getElementById('new-admin-username').value.trim();
     const newPassword = document.getElementById('new-admin-password').value;
     const confirmPassword = document.getElementById('confirm-admin-password').value;
-    
+
     // التحقق من كلمة المرور الحالية
     if (!currentPassword) {
         showChangeCredentialsError('يرجى إدخال كلمة المرور الحالية');
         return;
     }
-    
+
     // التحقق من صحة كلمة المرور الحالية
     if (currentPassword !== adminCredentials.password) {
         showChangeCredentialsError('كلمة المرور الحالية غير صحيحة');
@@ -2736,46 +2953,46 @@ function saveAdminCredentials() {
         document.getElementById('current-admin-password').focus();
         return;
     }
-    
+
     // التحقق من أن هناك شيء جديد للتغيير
     if (!newUsername && !newPassword) {
         showChangeCredentialsError('يرجى إدخال اسم مستخدم جديد أو كلمة مرور جديدة');
         return;
     }
-    
+
     // التحقق من اسم المستخدم الجديد
     if (newUsername && newUsername.length < 4) {
         showChangeCredentialsError('يجب أن يكون اسم المستخدم 4 أحرف على الأقل');
         return;
     }
-    
+
     // التحقق من كلمة المرور الجديدة
     if (newPassword) {
         if (newPassword.length < 6) {
             showChangeCredentialsError('يجب أن تكون كلمة المرور الجديدة 6 أحرف على الأقل');
             return;
         }
-        
+
         if (newPassword !== confirmPassword) {
             showChangeCredentialsError('كلمة المرور الجديدة وتأكيدها غير متطابقين');
             return;
         }
     }
-    
+
     // حفظ البيانات الجديدة
     if (newUsername) {
         adminCredentials.username = newUsername;
         localStorage.setItem('adminUsername', newUsername);
     }
-    
+
     if (newPassword) {
         adminCredentials.password = newPassword;
         localStorage.setItem('adminPassword', newPassword); // في الإنتاج، يجب تشفير كلمة المرور
     }
-    
+
     // إظهار رسالة نجاح
     showChangeCredentialsSuccess();
-    
+
     // إغلاق النافذة بعد 2 ثانية
     setTimeout(() => {
         closeChangeCredentialsModal();
@@ -2789,30 +3006,30 @@ function checkAdminPasswordStrength(e) {
     const password = e.target.value;
     const strengthMeter = document.querySelector('#admin-password-strength .strength-value');
     const strengthDescription = document.getElementById('admin-strength-description');
-    
+
     if (!password) {
         strengthMeter.className = 'strength-value';
         strengthDescription.textContent = 'لم يتم الإدخال';
         return;
     }
-    
+
     let strength = 0;
-    
+
     // الحد الأدنى للطول
     if (password.length >= 8) strength += 1;
-    
+
     // التحقق من وجود أرقام
     if (/\d/.test(password)) strength += 1;
-    
+
     // التحقق من وجود أحرف صغيرة وكبيرة
     if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength += 1;
-    
+
     // التحقق من وجود رموز خاصة
     if (/[^a-zA-Z0-9]/.test(password)) strength += 1;
-    
+
     // تحديث مقياس القوة
     strengthMeter.className = 'strength-value';
-    
+
     switch (strength) {
         case 0:
         case 1:
@@ -2839,18 +3056,18 @@ function checkAdminPasswordStrength(e) {
  */
 function showChangeCredentialsError(message) {
     let errorDiv = document.getElementById('change-credentials-error-message');
-    
+
     if (!errorDiv) {
         errorDiv = document.createElement('div');
         errorDiv.id = 'change-credentials-error-message';
         errorDiv.className = 'error-message';
-        
+
         const form = document.getElementById('change-credentials-form');
         if (form) {
             form.appendChild(errorDiv);
         }
     }
-    
+
     errorDiv.textContent = message;
     errorDiv.className = 'error-message active';
 }
@@ -2860,18 +3077,18 @@ function showChangeCredentialsError(message) {
  */
 function showChangeCredentialsSuccess() {
     let errorDiv = document.getElementById('change-credentials-error-message');
-    
+
     if (!errorDiv) {
         errorDiv = document.createElement('div');
         errorDiv.id = 'change-credentials-error-message';
         errorDiv.className = 'error-message';
-        
+
         const form = document.getElementById('change-credentials-form');
         if (form) {
             form.appendChild(errorDiv);
         }
     }
-    
+
     errorDiv.textContent = 'تم حفظ التغييرات بنجاح';
     errorDiv.className = 'success-message active';
 }
@@ -2883,13 +3100,13 @@ function closeChangeCredentialsModal() {
     const modal = document.getElementById('change-admin-credentials-modal');
     if (modal) {
         modal.classList.remove('active');
-        
+
         // مسح الحقول
         document.getElementById('current-admin-password').value = '';
         document.getElementById('new-admin-username').value = '';
         document.getElementById('new-admin-password').value = '';
         document.getElementById('confirm-admin-password').value = '';
-        
+
         // إخفاء الرسائل
         const messageDiv = document.getElementById('change-credentials-error-message');
         if (messageDiv) {
@@ -2973,7 +3190,7 @@ function addChangeCredentialsStyles() {
             text-decoration: underline;
         }
     `;
-    
+
     document.head.appendChild(styleElement);
 }
 
@@ -2988,9 +3205,9 @@ function validateAdminCredentials(username, password) {
 
 // إضافة رابط لتغيير البيانات في نافذة التحقق من المسؤول
 const originalPromptAdminCredentials = promptAdminCredentials;
-promptAdminCredentials = function(callback) {
+promptAdminCredentials = function (callback) {
     originalPromptAdminCredentials(callback);
-    
+
     setTimeout(() => {
         addChangeCredentialsLink();
     }, 100);
@@ -3002,29 +3219,29 @@ promptAdminCredentials = function(callback) {
 function addChangeCredentialsLink() {
     const adminPromptModal = document.getElementById('admin-prompt-modal');
     if (!adminPromptModal) return;
-    
+
     // التحقق من وجود الرابط مسبقاً
     if (adminPromptModal.querySelector('.change-credentials-link')) return;
-    
+
     const form = adminPromptModal.querySelector('#admin-credentials-form');
     if (form) {
         const link = document.createElement('a');
         link.href = '#';
         link.className = 'change-credentials-link';
         link.innerHTML = '<i class="fas fa-key"></i> تغيير بيانات المسؤول';
-        
-        link.addEventListener('click', function(e) {
+
+        link.addEventListener('click', function (e) {
             e.preventDefault();
             closeAdminPrompt();
             showChangeAdminCredentialsModal();
         });
-        
+
         form.appendChild(link);
     }
 }
 
 // إضافة زر لتغيير البيانات في صفحة إدارة المستخدمين
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // إضافة زر تغيير بيانات المسؤول إلى صفحة إدارة المستخدمين
     const userManagementPage = document.getElementById('user-management-page');
     if (userManagementPage) {
@@ -3034,7 +3251,7 @@ document.addEventListener('DOMContentLoaded', function() {
             changeCredentialsBtn.className = 'btn btn-outline';
             changeCredentialsBtn.innerHTML = '<i class="fas fa-key"></i> تغيير بيانات المسؤول';
             changeCredentialsBtn.addEventListener('click', showChangeAdminCredentialsModal);
-            
+
             // إضافة الزر قبل زر إضافة مستخدم
             const addUserBtn = headerActions.querySelector('#add-user-btn');
             if (addUserBtn) {
@@ -3049,69 +3266,138 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 /**
- * ملف تكامل نظام الصلاحيات - إصلاح مشكلة undefined
- */
-
-/**
- * تهيئة نظام الصلاحيات
+ * تحسين دالة تهيئة نظام الصلاحيات
  */
 function initPermissionsSystem() {
     console.log('تهيئة نظام الصلاحيات...');
+
+    // تحميل الصلاحيات المتاحة إذا لم تكن محددة
+    if (!window.AVAILABLE_PERMISSIONS) {
+        window.AVAILABLE_PERMISSIONS = [
+            { id: 'canAddInvestors', label: 'إضافة مستثمرين', category: 'investors' },
+            { id: 'canEditInvestors', label: 'تعديل المستثمرين', category: 'investors' },
+            { id: 'canDeleteInvestors', label: 'حذف المستثمرين', category: 'investors' },
+            { id: 'canViewInvestors', label: 'عرض المستثمرين', category: 'investors' },
+            { id: 'canProcessDeposits', label: 'معالجة الإيداعات', category: 'transactions' },
+            { id: 'canProcessWithdrawals', label: 'معالجة السحوبات', category: 'transactions' },
+            { id: 'canPayProfits', label: 'دفع الأرباح', category: 'transactions' },
+            { id: 'canViewTransactions', label: 'عرض المعاملات', category: 'transactions' },
+            { id: 'canManageSettings', label: 'إدارة الإعدادات', category: 'system' },
+            { id: 'canExportData', label: 'تصدير البيانات', category: 'data' },
+            { id: 'canImportData', label: 'استيراد البيانات', category: 'data' },
+            { id: 'canCreateBackup', label: 'إنشاء نسخ احتياطية', category: 'system' },
+            { id: 'canRestoreBackup', label: 'استعادة النسخ الاحتياطية', category: 'system' },
+            { id: 'canCreateUsers', label: 'إنشاء مستخدمين', category: 'users' },
+            { id: 'canEditUsers', label: 'تعديل المستخدمين', category: 'users' },
+            { id: 'canDeleteUsers', label: 'حذف المستخدمين', category: 'users' },
+            { id: 'canViewUsers', label: 'عرض المستخدمين', category: 'users' },
+            { id: 'canViewReports', label: 'عرض التقارير', category: 'reports' },
+            { id: 'canCreateReports', label: 'إنشاء تقارير', category: 'reports' },
+            { id: 'canExportReports', label: 'تصدير التقارير', category: 'reports' }
+        ];
+    }
     
-    // تحميل الصلاحيات المتاحة
-    loadAvailablePermissions();
-    
+    // تعيين الفئات إذا لم تكن محددة
+    if (!window.PERMISSIONS_CATEGORIES) {
+        window.PERMISSIONS_CATEGORIES = {
+            'investors': 'المستثمرين',
+            'transactions': 'المعاملات المالية',
+            'data': 'البيانات',
+            'system': 'النظام',
+            'users': 'المستخدمين',
+            'reports': 'التقارير'
+        };
+    }
+
     // إضافة مراقبة للتغييرات
     setupPermissionsObserver();
-    
+
     console.log('تم تهيئة نظام الصلاحيات بنجاح');
 }
 
+
+
+
+
+
+
 /**
- * تحميل الصلاحيات المتاحة في النظام
+ * مراقبة الصلاحيات وتحديث الواجهة عند تغييرها
  */
-function loadAvailablePermissions() {
-    // قائمة الصلاحيات المتاحة في النظام
-    window.AVAILABLE_PERMISSIONS = [
-        { id: 'canAddInvestors', label: 'إضافة مستثمرين', category: 'investors' },
-        { id: 'canEditInvestors', label: 'تعديل المستثمرين', category: 'investors' },
-        { id: 'canDeleteInvestors', label: 'حذف المستثمرين', category: 'investors' },
-        { id: 'canViewInvestors', label: 'عرض المستثمرين', category: 'investors' },
-        { id: 'canProcessDeposits', label: 'معالجة الإيداعات', category: 'transactions' },
-        { id: 'canProcessWithdrawals', label: 'معالجة السحوبات', category: 'transactions' },
-        { id: 'canPayProfits', label: 'دفع الأرباح', category: 'transactions' },
-        { id: 'canViewTransactions', label: 'عرض المعاملات', category: 'transactions' },
-        { id: 'canManageSettings', label: 'إدارة الإعدادات', category: 'system' },
-        { id: 'canExportData', label: 'تصدير البيانات', category: 'data' },
-        { id: 'canImportData', label: 'استيراد البيانات', category: 'data' },
-        { id: 'canCreateBackup', label: 'إنشاء نسخ احتياطية', category: 'system' },
-        { id: 'canRestoreBackup', label: 'استعادة النسخ الاحتياطية', category: 'system' },
-        { id: 'canCreateUsers', label: 'إنشاء مستخدمين', category: 'users' },
-        { id: 'canEditUsers', label: 'تعديل المستخدمين', category: 'users' },
-        { id: 'canDeleteUsers', label: 'حذف المستخدمين', category: 'users' },
-        { id: 'canViewUsers', label: 'عرض المستخدمين', category: 'users' },
-        { id: 'canViewReports', label: 'عرض التقارير', category: 'reports' },
-        { id: 'canCreateReports', label: 'إنشاء تقارير', category: 'reports' },
-        { id: 'canExportReports', label: 'تصدير التقارير', category: 'reports' }
-    ];
+function updateUIBasedOnPermissions() {
+    // التأكد من تهيئة نظام الصلاحيات
+    if (typeof initPermissionsSystem === 'function' && 
+        (!window.AVAILABLE_PERMISSIONS || !window.PERMISSIONS_CATEGORIES)) {
+        initPermissionsSystem();
+    }
     
-    // تصنيف الصلاحيات حسب الفئة
-    window.PERMISSIONS_CATEGORIES = {
-        'investors': 'المستثمرين',
-        'transactions': 'المعاملات المالية',
-        'data': 'البيانات',
-        'system': 'النظام',
-        'users': 'المستخدمين',
-        'reports': 'التقارير'
-    };
+    // تحديث العناصر المرئية حسب الصلاحيات
+    updatePermissionBasedUI();
+}
+
+// تهيئة نظام الصلاحيات عند تحميل الصفحة
+document.addEventListener('DOMContentLoaded', function () {
+    // التأكد من تهيئة نظام الصلاحيات
+    initPermissionsSystem();
     
-    // تعيين صلاحيات افتراضية لكل نوع مستخدم
-    window.DEFAULT_PERMISSIONS = {
-        'admin': getAllPermissions(true),
-        'manager': getManagerPermissions(),
-        'user': getUserPermissions()
+    // تحديث الواجهة حسب الصلاحيات
+    updatePermissionBasedUI();
+    
+    // إضافة مستمع للتحقق من الصلاحيات قبل تعديل المستخدمين
+    const userPermissionsButtons = document.querySelectorAll('.permissions-user-btn');
+    userPermissionsButtons.forEach(button => {
+        const originalClick = button.onclick;
+        button.onclick = function(e) {
+            if (!hasPermission('canEditUsers') && !hasPermission('canCreateUsers')) {
+                e.preventDefault();
+                alert('ليس لديك صلاحية لتعديل صلاحيات المستخدمين');
+                return false;
+            }
+            
+            // استدعاء السلوك الأصلي
+            if (typeof originalClick === 'function') {
+                return originalClick.call(this, e);
+            }
+        };
+    });
+});
+
+
+
+
+// تحسين وظيفة التحقق من صلاحيات المستخدم الحالي
+function checkCurrentUserPermissions() {
+    let currentUser = null;
+    
+    if (window.AuthSystem && typeof window.AuthSystem.getUserInfo === 'function') {
+        currentUser = window.AuthSystem.getUserInfo();
+    }
+    
+    if (!currentUser) {
+        console.warn('لم يتم العثور على معلومات المستخدم الحالي');
+        return {
+            isAdmin: false,
+            canCreateUsers: false,
+            canEditUsers: false,
+            canDeleteUsers: false
+        };
+    }
+    
+    // التحقق من صلاحيات المستخدم
+    return {
+        isAdmin: currentUser.type === 'admin',
+        canCreateUsers: currentUser.type === 'admin' || 
+                       (currentUser.permissions && currentUser.permissions.canCreateUsers),
+        canEditUsers: currentUser.type === 'admin' || 
+                     (currentUser.permissions && currentUser.permissions.canEditUsers),
+        canDeleteUsers: currentUser.type === 'admin' || 
+                       (currentUser.permissions && currentUser.permissions.canDeleteUsers)
     };
 }
+
+
+
+
 
 /**
  * الحصول على جميع الصلاحيات
@@ -3120,14 +3406,14 @@ function loadAvailablePermissions() {
  */
 function getAllPermissions(granted = true) {
     const permissions = {};
-    
+
     // ملء جميع الصلاحيات بالقيمة المحددة
     if (window.AVAILABLE_PERMISSIONS) {
         window.AVAILABLE_PERMISSIONS.forEach(permission => {
             permissions[permission.id] = granted;
         });
     }
-    
+
     return permissions;
 }
 
@@ -3137,13 +3423,13 @@ function getAllPermissions(granted = true) {
  */
 function getManagerPermissions() {
     const permissions = getAllPermissions(true);
-    
+
     // تعديل بعض الصلاحيات
     permissions.canDeleteUsers = false;
     permissions.canCreateBackup = true;
     permissions.canRestoreBackup = false;
     permissions.canManageSettings = true;
-    
+
     return permissions;
 }
 
@@ -3153,13 +3439,13 @@ function getManagerPermissions() {
  */
 function getUserPermissions() {
     const permissions = getAllPermissions(false);
-    
+
     // تعيين الصلاحيات الأساسية
     permissions.canViewInvestors = true;
     permissions.canViewTransactions = true;
     permissions.canExportData = true;
     permissions.canViewReports = true;
-    
+
     return permissions;
 }
 
@@ -3172,10 +3458,10 @@ function setupPermissionsObserver() {
         firebase.database().ref('users').on('child_changed', (snapshot) => {
             const userId = snapshot.key;
             const userData = snapshot.val();
-            
+
             // تحديث الواجهة إذا كان المستخدم الحالي
-            if (window.AuthSystem && 
-                window.AuthSystem.getCurrentUser && 
+            if (window.AuthSystem &&
+                window.AuthSystem.getCurrentUser &&
                 window.AuthSystem.getCurrentUser().uid === userId) {
                 if (userData.permissions) {
                     updateUserPermissions(userData.permissions);
@@ -3192,10 +3478,10 @@ function setupPermissionsObserver() {
 function updateUserPermissions(permissions) {
     if (window.AuthSystem && window.AuthSystem.getUserInfo) {
         const currentUser = window.AuthSystem.getUserInfo();
-        
+
         if (currentUser) {
             currentUser.permissions = permissions;
-            
+
             // تحديث الواجهة
             updatePermissionBasedUI();
         }
@@ -3212,41 +3498,96 @@ function sanitizePermissions(permissions) {
     if (!permissions) {
         permissions = {};
     }
-    
+
     // إذا لم تكن الصلاحيات المتاحة محددة، قم بإرجاع الكائن كما هو
     if (!window.AVAILABLE_PERMISSIONS) {
-        return permissions;
+        // القائمة الافتراضية للصلاحيات
+        const defaultPermissionsList = [
+            'canAddInvestors', 'canEditInvestors', 'canDeleteInvestors', 'canViewInvestors',
+            'canProcessDeposits', 'canProcessWithdrawals', 'canPayProfits', 'canViewTransactions',
+            'canManageSettings', 'canExportData', 'canImportData', 'canCreateBackup',
+            'canRestoreBackup', 'canCreateUsers', 'canEditUsers', 'canDeleteUsers',
+            'canViewUsers', 'canViewReports', 'canCreateReports', 'canExportReports'
+        ];
+        
+        // إضافة الصلاحيات المفقودة
+        const sanitized = { ...permissions };
+        
+        defaultPermissionsList.forEach(permissionId => {
+            if (sanitized[permissionId] === undefined) {
+                sanitized[permissionId] = false;
+            }
+        });
+        
+        return sanitized;
     }
-    
-    // إضافة الصلاحيات المفقودة
+
+    // إضافة الصلاحيات المفقودة من القائمة المتاحة
     const sanitized = { ...permissions };
-    
+
     window.AVAILABLE_PERMISSIONS.forEach(permission => {
         if (sanitized[permission.id] === undefined) {
             sanitized[permission.id] = false;
         }
     });
-    
+
     return sanitized;
 }
 
+
 /**
- * حفظ صلاحيات المستخدم
- * @param {string} userId - معرف المستخدم
+ * حفظ صلاحيات المستخدم المحدد
+ * @param {string} userId - معرف المستخدم المستهدف
  * @param {Object} permissions - كائن الصلاحيات
  * @returns {Promise} - وعد بنتيجة الحفظ
  */
 function saveUserPermissions(userId, permissions) {
+    // التحقق من أن المستخدم الحالي هو مسؤول
+    let currentUser = null;
+    
+    // الحصول على المستخدم الحالي بطريقة موثوقة
+    if (window.AuthSystem && typeof window.AuthSystem.getUserInfo === 'function') {
+        currentUser = window.AuthSystem.getUserInfo();
+    }
+    
+    console.log('المستخدم الحالي:', currentUser);
+    
+    // التحقق من نوع المستخدم الحالي (يجب أن يكون مسؤولاً)
+    if (!currentUser || currentUser.type !== 'admin') {
+        // منع غير المسؤولين من تعديل الصلاحيات، إلا إذا كان لديهم صلاحية خاصة
+        if (!currentUser || (!hasPermission('canCreateUsers') && !hasPermission('canEditUsers'))) {
+            console.error('ليس لديك صلاحية لتعديل المستخدمين');
+            return Promise.reject(new Error('ليس لديك صلاحية لتعديل صلاحيات المستخدمين'));
+        }
+    }
+
+    // التأكد من أن معرف المستخدم موجود وصالح
+    if (!userId) {
+        console.error('معرف المستخدم غير صالح:', userId);
+        return Promise.reject(new Error('معرف المستخدم غير صالح'));
+    }
+
     // تنظيف الصلاحيات قبل الحفظ
     const sanitizedPermissions = sanitizePermissions(permissions);
-    
+
+    console.log(`حفظ الصلاحيات للمستخدم: ${userId}`, sanitizedPermissions);
+
+    // تسجيل الإجراء
+    logWithDetails('تعديل_صلاحيات', userId, permissions);
+
     if (window.firebase && firebase.database) {
-        return firebase.database().ref(`users/${userId}/permissions`).set(sanitizedPermissions);
+        // حفظ الصلاحيات في حساب المستخدم المستهدف
+        return firebase.database().ref(`users/${userId}/permissions`).set(sanitizedPermissions)
+            .then(() => {
+                console.log('تم حفظ الصلاحيات بنجاح');
+                return true;
+            });
     } else {
+        // للعرض التوضيحي
+        console.log(`[عرض توضيحي] تم حفظ الصلاحيات للمستخدم: ${userId}`);
         return Promise.resolve();
     }
 }
-
 /**
  * الحصول على الصلاحيات الافتراضية حسب نوع المستخدم
  * @param {string} userType - نوع المستخدم
@@ -3256,7 +3597,7 @@ function getDefaultPermissions(userType) {
     if (window.DEFAULT_PERMISSIONS && window.DEFAULT_PERMISSIONS[userType]) {
         return window.DEFAULT_PERMISSIONS[userType];
     }
-    
+
     // إذا لم تكن محددة، استخدم هذه القيم
     switch (userType) {
         case 'admin':
@@ -3321,13 +3662,13 @@ function getDefaultPermissions(userType) {
 function showUserPermissionsModal(user) {
     // التحقق من وجود النافذة
     let permissionsModal = document.getElementById('user-permissions-modal');
-    
+
     if (!permissionsModal) {
         // إنشاء نافذة صلاحيات المستخدم
         permissionsModal = document.createElement('div');
         permissionsModal.id = 'user-permissions-modal';
         permissionsModal.className = 'modal-overlay';
-        
+
         permissionsModal.innerHTML = `
             <div class="modal permissions-modal">
                 <div class="modal-header">
@@ -3358,26 +3699,26 @@ function showUserPermissionsModal(user) {
                 </div>
             </div>
         `;
-        
+
         document.body.appendChild(permissionsModal);
-        
+
         // إضافة مستمعي الأحداث
         setupBasicModalListeners(permissionsModal);
-        
+
         // مستمع حدث لزر إعادة التعيين
         const resetBtn = permissionsModal.querySelector('#reset-to-default-btn');
         if (resetBtn) {
-            resetBtn.addEventListener('click', function() {
+            resetBtn.addEventListener('click', function () {
                 resetPermissionsToDefault(user.type || 'user');
             });
         }
-        
+
         // مستمع حدث لزر حفظ الصلاحيات
         const savePermissionsBtn = permissionsModal.querySelector('#save-permissions-btn');
         if (savePermissionsBtn) {
-            savePermissionsBtn.addEventListener('click', function() {
+            savePermissionsBtn.addEventListener('click', function () {
                 const permissions = collectPermissionsFromForm();
-                
+
                 // حفظ الصلاحيات
                 saveUserPermissions(user.id, permissions)
                     .then(() => {
@@ -3391,17 +3732,17 @@ function showUserPermissionsModal(user) {
             });
         }
     }
-    
+
     // ملء معلومات المستخدم
     document.getElementById('permissions-user-name').textContent = user.displayName || 'غير محدد';
     document.getElementById('permissions-user-email').textContent = user.email;
     const userTypeSpan = document.getElementById('permissions-user-type');
     userTypeSpan.textContent = getUserTypeLabel(user.type || 'user');
     userTypeSpan.className = `badge ${user.type || 'user'}`;
-    
+
     // تحميل صلاحيات المستخدم الحالية
     loadUserPermissions(user.id);
-    
+
     // إظهار النافذة
     permissionsModal.classList.add('active');
 }
@@ -3415,7 +3756,7 @@ function loadUserPermissions(userId) {
     if (!permissionsContainer) return;
 
     permissionsContainer.innerHTML = ''; // تفريغ الحاوية
-    
+
     // إذا لم تكن الصلاحيات المتاحة محددة، استخدم القائمة البسيطة
     if (!window.AVAILABLE_PERMISSIONS || !window.PERMISSIONS_CATEGORIES) {
         // القائمة البسيطة للصلاحيات
@@ -3450,21 +3791,21 @@ function loadUserPermissions(userId) {
     } else {
         // عرض الصلاحيات حسب الفئات
         const categories = window.PERMISSIONS_CATEGORIES;
-        
+
         // إنشاء قسم لكل فئة
         for (const [categoryId, categoryName] of Object.entries(categories)) {
             // الحصول على صلاحيات هذه الفئة
             const categoryPermissions = window.AVAILABLE_PERMISSIONS.filter(
                 permission => permission.category === categoryId
             );
-            
+
             if (categoryPermissions.length === 0) continue;
-            
+
             // إنشاء مجموعة الصلاحيات
             const categoryGroup = document.createElement('div');
             categoryGroup.className = 'permission-group';
             categoryGroup.innerHTML = `<h5>${categoryName}</h5>`;
-            
+
             // إضافة عناصر الصلاحيات
             categoryPermissions.forEach(permission => {
                 const permissionItem = document.createElement('div');
@@ -3477,7 +3818,7 @@ function loadUserPermissions(userId) {
                 `;
                 categoryGroup.appendChild(permissionItem);
             });
-            
+
             permissionsContainer.appendChild(categoryGroup);
         }
     }
@@ -3488,7 +3829,7 @@ function loadUserPermissions(userId) {
             .then(snapshot => {
                 // التأكد من وجود كائن الصلاحيات
                 const permissions = snapshot.val() || {};
-                
+
                 // تعيين حالة خانات الاختيار
                 const checkboxes = document.querySelectorAll('[id^="perm-"]');
                 checkboxes.forEach(checkbox => {
@@ -3505,7 +3846,7 @@ function loadUserPermissions(userId) {
     } else {
         // للعرض التوضيحي
         const demoPermissions = getDefaultPermissions(user.type || 'user');
-        
+
         // تعيين حالة خانات الاختيار
         const checkboxes = document.querySelectorAll('[id^="perm-"]');
         checkboxes.forEach(checkbox => {
@@ -3518,12 +3859,12 @@ function loadUserPermissions(userId) {
 }
 
 /**
- * جمع الصلاحيات من النموذج
+ * تعديل وظيفة جمع الصلاحيات من النموذج لإضافة تسجيل
  * @returns {Object} - كائن الصلاحيات
  */
 function collectPermissionsFromForm() {
     const permissions = {};
-    
+
     // جمع حالة جميع خانات الاختيار
     const checkboxes = document.querySelectorAll('[id^="perm-"]');
     checkboxes.forEach(checkbox => {
@@ -3532,9 +3873,11 @@ function collectPermissionsFromForm() {
             permissions[permissionId] = checkbox.checked;
         }
     });
-    
+
+    console.log('تم جمع الصلاحيات من النموذج:', permissions);
     return permissions;
 }
+
 
 /**
  * إعادة تعيين الصلاحيات للقيم الافتراضية
@@ -3542,7 +3885,8 @@ function collectPermissionsFromForm() {
  */
 function resetPermissionsToDefault(userType) {
     const defaultPermissions = getDefaultPermissions(userType);
-    
+    console.log(`إعادة تعيين الصلاحيات لنوع المستخدم: ${userType}`, defaultPermissions);
+
     // تعيين حالة خانات الاختيار
     for (const [key, value] of Object.entries(defaultPermissions)) {
         const checkbox = document.getElementById(`perm-${key}`);
@@ -3571,10 +3915,10 @@ function getUserTypeLabel(userType) {
 }
 
 // تهيئة نظام الصلاحيات عند تحميل الصفحة
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // التأكد من تهيئة نظام الصلاحيات
     initPermissionsSystem();
-    
+
     // تحديث الواجهة حسب الصلاحيات
     updatePermissionBasedUI();
 });
@@ -3587,9 +3931,9 @@ function updatePermissionBasedUI() {
     if (window.AuthSystem && typeof window.AuthSystem.getUserInfo === 'function') {
         currentUser = window.AuthSystem.getUserInfo();
     }
-    
+
     if (!currentUser || !currentUser.permissions) return;
-    
+
     // إظهار/إخفاء عناصر القائمة الجانبية حسب الصلاحيات
     const navItems = document.querySelectorAll('.nav-item[data-permission]');
     navItems.forEach(item => {
@@ -3600,7 +3944,7 @@ function updatePermissionBasedUI() {
             item.style.display = 'none';
         }
     });
-    
+
     // إظهار/إخفاء أزرار الإجراءات حسب الصلاحيات
     const actionButtons = {
         '.delete-investor-btn': 'canDeleteInvestors',
@@ -3609,7 +3953,7 @@ function updatePermissionBasedUI() {
         '.backup-btn': 'canCreateBackup',
         '.restore-btn': 'canRestoreBackup'
     };
-    
+
     for (const [selector, permission] of Object.entries(actionButtons)) {
         const buttons = document.querySelectorAll(selector);
         buttons.forEach(button => {
@@ -3634,3 +3978,372 @@ if (window.saveUserPermissions === undefined) {
 if (window.getDefaultPermissions === undefined) {
     window.getDefaultPermissions = getDefaultPermissions;
 }
+
+/**
+ * تحديث دالة إضافة مستمعي الأحداث للنافذة المنبثقة
+ * @param {HTMLElement} modal - عنصر النافذة
+ * @param {boolean} allowCloseOutside - السماح بالإغلاق عند النقر خارج النافذة
+ */
+function setupBasicModalListeners(modal, allowCloseOutside = true) {
+    if (!modal) return;
+
+    // إغلاق النافذة عند النقر على زر الإغلاق
+    const closeButtons = modal.querySelectorAll('.modal-close, .modal-close-btn');
+    closeButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            // فحص إذا كانت النافذة هي نافذة التحقق من المسؤول
+            if (modal.id === 'admin-prompt-modal') {
+                // لا نسمح بإغلاق نافذة التحقق من المسؤول
+                return;
+            }
+            modal.classList.remove('active');
+        });
+    });
+
+    // إغلاق النافذة عند النقر خارجها (إذا كان مسموحاً)
+    if (allowCloseOutside) {
+        modal.addEventListener('click', function (e) {
+            if (e.target === modal) {
+                // فحص إذا كانت النافذة هي نافذة التحقق من المسؤول
+                if (modal.id === 'admin-prompt-modal') {
+                    // لا نسمح بإغلاق نافذة التحقق من المسؤول
+                    return;
+                }
+                modal.classList.remove('active');
+            }
+        });
+    }
+}
+
+/**
+ * التحقق من اسم المسؤول ورمزه السري قبل فتح صفحة إدارة المستخدمين
+ */
+function promptAdminCredentials(callback) {
+    // التحقق من حالة القفل
+    if (isAccountLocked()) {
+        const remainingTime = getRemainingLockoutTime();
+        alert(`تم تجاوز عدد المحاولات المسموح بها. يرجى المحاولة بعد ${remainingTime}`);
+        return;
+    }
+
+    // التحقق من وجود النافذة
+    let adminPromptModal = document.getElementById('admin-prompt-modal');
+
+    if (!adminPromptModal) {
+        // إنشاء نافذة إدخال بيانات المسؤول
+        adminPromptModal = document.createElement('div');
+        adminPromptModal.id = 'admin-prompt-modal';
+        adminPromptModal.className = 'modal-overlay';
+
+        adminPromptModal.innerHTML = `
+            <div class="modal admin-prompt-modal">
+                <div class="modal-header">
+                    <h3 class="modal-title">التحقق من المسؤول</h3>
+                    <!-- تمت إزالة زر الإغلاق -->
+                </div>
+                <div class="modal-body">
+                    <div class="security-notice">
+                        <i class="fas fa-shield-alt"></i>
+                        <p>هذه الصفحة مخصصة للمسؤولين فقط. يرجى إدخال بيانات المسؤول للمتابعة.</p>
+                    </div>
+                    
+                    <form id="admin-credentials-form">
+                        <div class="form-group">
+                            <label class="form-label">اسم المسؤول</label>
+                            <input type="text" class="form-input" id="admin-username" required autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">الرمز السري</label>
+                            <div class="password-input-container">
+                                <input type="password" class="form-input" id="admin-password" required autocomplete="off">
+                                <button type="button" class="toggle-password">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="attempts-status">
+                                المحاولات المتبقية: <span id="remaining-attempts">${MAX_ATTEMPTS - loginAttempts}</span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-outline" id="return-btn">العودة للصفحة الرئيسية</button>
+                    <button class="btn btn-primary" id="verify-admin-btn">تحقق</button>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(adminPromptModal);
+
+        // إضافة الأنماط المطلوبة
+        addAdminPromptStyles();
+
+        // إضافة مستمعي الأحداث مع منع الإغلاق عند النقر خارج النافذة
+        setupBasicModalListeners(adminPromptModal, false);
+
+        // مستمع حدث لتبديل إظهار كلمة المرور
+        const togglePasswordBtn = adminPromptModal.querySelector('.toggle-password');
+        if (togglePasswordBtn) {
+            togglePasswordBtn.addEventListener('click', function () {
+                const passwordInput = this.parentElement.querySelector('input');
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    this.querySelector('i').classList.remove('fa-eye');
+                    this.querySelector('i').classList.add('fa-eye-slash');
+                } else {
+                    passwordInput.type = 'password';
+                    this.querySelector('i').classList.remove('fa-eye-slash');
+                    this.querySelector('i').classList.add('fa-eye');
+                }
+            });
+        }
+
+        // مستمع حدث للنموذج
+        const form = adminPromptModal.querySelector('#admin-credentials-form');
+        if (form) {
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                verifyAdminCredentials(callback);
+            });
+        }
+
+        // مستمع حدث لزر التحقق
+        const verifyAdminBtn = adminPromptModal.querySelector('#verify-admin-btn');
+        if (verifyAdminBtn) {
+            verifyAdminBtn.addEventListener('click', function () {
+                verifyAdminCredentials(callback);
+            });
+        }
+
+        // مستمع حدث لزر العودة
+        const returnBtn = adminPromptModal.querySelector('#return-btn');
+        if (returnBtn) {
+            returnBtn.addEventListener('click', function () {
+                // إغلاق النافذة والرجوع للصفحة الرئيسية
+                adminPromptModal.classList.remove('active');
+                window.location.hash = '';
+                navigateToPage('dashboard'); // أو اسم الصفحة الرئيسية لديك
+            });
+        }
+
+        // إيقاف مستمع حدث ESC لمنع إغلاق النافذة بالمفتاح ESC
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && adminPromptModal.classList.contains('active')) {
+                e.preventDefault(); // منع السلوك الافتراضي
+                return false;
+            }
+        });
+    }
+
+    // تحديث عدد المحاولات المتبقية
+    updateRemainingAttempts();
+
+    // إظهار النافذة
+    adminPromptModal.classList.add('active');
+
+    // تركيز على حقل اسم المسؤول
+    setTimeout(() => {
+        const usernameInput = document.getElementById('admin-username');
+        if (usernameInput) {
+            usernameInput.focus();
+        }
+    }, 100);
+}
+
+/**
+ * التحقق من بيانات المسؤول
+ */
+function verifyAdminCredentials(callback) {
+    const username = document.getElementById('admin-username').value.trim();
+    const password = document.getElementById('admin-password').value;
+
+    if (!username || !password) {
+        showErrorMessage('يرجى إدخال اسم المسؤول والرمز السري');
+        return;
+    }
+
+    // التحقق من بيانات المسؤول
+    validateAdminCredentials(username, password).then(isValid => {
+        if (isValid) {
+            // إعادة تعيين عدد المحاولات
+            loginAttempts = 0;
+
+            // إخفاء رسالة الخطأ
+            hideErrorMessage();
+
+            // إغلاق النافذة
+            closeAdminPrompt();
+
+            // تنفيذ رد الاتصال (فتح صفحة إدارة المستخدمين)
+            if (typeof callback === 'function') {
+                callback();
+            }
+
+            // حفظ جلسة التحقق لفترة محدودة
+            saveAdminSession();
+        } else {
+            // زيادة عدد المحاولات الفاشلة
+            loginAttempts++;
+
+            // تحديث عدد المحاولات المتبقية
+            updateRemainingAttempts();
+
+            if (loginAttempts >= MAX_ATTEMPTS) {
+                // قفل الحساب مؤقتاً
+                lockAccount();
+                showErrorMessage('تم قفل الحساب مؤقتاً بسبب تجاوز عدد المحاولات المسموح بها');
+
+                // إغلاق النافذة بعد فترة وإعادة التوجيه للصفحة الرئيسية
+                setTimeout(() => {
+                    closeAdminPrompt();
+                    window.location.hash = '';
+                    navigateToPage('dashboard'); // أو اسم الصفحة الرئيسية لديك
+                }, 3000);
+            } else {
+                showErrorMessage('اسم المسؤول أو الرمز السري غير صحيح');
+
+                // مسح حقل كلمة المرور
+                document.getElementById('admin-password').value = '';
+                document.getElementById('admin-password').focus();
+            }
+        }
+    }).catch(error => {
+        console.error('خطأ في التحقق من بيانات المسؤول:', error);
+        showErrorMessage('حدث خطأ أثناء التحقق. يرجى المحاولة مرة أخرى');
+    });
+}
+
+/**
+ * إضافة أنماط CSS معدلة لنافذة التحقق
+ */
+function addAdminPromptStyles() {
+    const styleElement = document.createElement('style');
+    styleElement.textContent = `
+        .admin-prompt-modal {
+            max-width: 400px;
+        }
+        
+        /* الأنماط الجديدة لمنع الإغلاق */
+        #admin-prompt-modal {
+            z-index: 9999; /* أعلى من جميع العناصر */
+        }
+        
+        #admin-prompt-modal .modal {
+            border: 2px solid #3b82f6;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+        }
+        
+        .security-notice {
+            background-color: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .security-notice i {
+            font-size: 1.5rem;
+            color: #0284c7;
+        }
+        
+        .security-notice p {
+            margin: 0;
+            color: #0369a1;
+            font-size: 0.9rem;
+        }
+        
+        .attempts-status {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #6b7280;
+            margin-top: 10px;
+        }
+        
+        #remaining-attempts {
+            font-weight: bold;
+            color: #dc2626;
+        }
+        
+        .error-message {
+            background-color: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 15px;
+            display: none;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        
+        .error-message.active {
+            display: block;
+        }
+        
+        .admin-prompt-modal .form-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        
+        .modal.shake {
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+        }
+    `;
+
+    document.head.appendChild(styleElement);
+}
+
+// تعديل مستمع حدث زر إدارة المستخدمين
+document.addEventListener('DOMContentLoaded', function () {
+    const userManagementItem = document.querySelector('.nav-item.user-management');
+    if (userManagementItem) {
+        const userManagementLink = userManagementItem.querySelector('.nav-link');
+        if (userManagementLink) {
+            userManagementLink.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                // التحقق أولاً من صلاحية الجلسة
+                if (isAdminSessionValid()) {
+                    navigateToPage('user-management');
+                } else {
+                    promptAdminCredentials(() => {
+                        navigateToPage('user-management');
+                    });
+                }
+            });
+        }
+    }
+
+    // إضافة مستمع للنقر المزدوج كاختصار للمسؤولين
+    document.addEventListener('dblclick', function (e) {
+        if (e.ctrlKey && e.shiftKey) {
+            promptAdminCredentials(() => {
+                navigateToPage('user-management');
+            });
+        }
+    });
+});
+
+// إضافة حماية للمسارات المباشرة
+window.addEventListener('hashchange', function () {
+    if (window.location.hash === '#user-management' && !isAdminSessionValid()) {
+        // إعادة التوجيه للصفحة الرئيسية
+        window.location.hash = '';
+
+        // عرض نافذة التحقق
+        promptAdminCredentials(() => {
+            navigateToPage('user-management');
+        });
+    }
+});
