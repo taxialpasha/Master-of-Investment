@@ -1,0 +1,206 @@
+/**
+ * أنماط مؤشرات وضع عدم الاتصال
+ * تصميم لإظهار مؤشرات وضع عدم الاتصال في واجهة المستخدم
+ */
+
+/* مؤشر حالة الاتصال في الشريط العلوي */
+.connection-status {
+    display: flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 5px;
+    margin-left: 10px;
+    font-size: 0.85rem;
+    transition: all 0.3s ease-in-out;
+}
+
+.connection-status.online {
+    background-color: rgba(25, 135, 84, 0.1);
+    color: #198754;
+}
+
+.connection-status.offline {
+    background-color: rgba(255, 193, 7, 0.15);
+    color: #ff9800;
+    animation: pulse 2s infinite;
+}
+
+.connection-status i {
+    margin-left: 6px;
+    font-size: 1rem;
+}
+
+/* شريط إشعار وضع عدم الاتصال */
+.offline-bar {
+    display: none;
+    background-color: #fff3cd;
+    border-bottom: 1px solid #ffe69c;
+    padding: 8px 20px;
+    color: #664d03;
+    text-align: center;
+    position: relative;
+}
+
+body.offline .offline-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    column-gap: 10px;
+}
+
+.offline-bar i {
+    font-size: 1.1rem;
+    margin-left: 8px;
+}
+
+.offline-bar .close-btn {
+    background: none;
+    border: none;
+    color: #664d03;
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.2s ease;
+}
+
+.offline-bar .close-btn:hover {
+    opacity: 1;
+}
+
+/* وضع عدم الاتصال العام */
+body.offline .online-only {
+    display: none !important;
+}
+
+body:not(.offline) .offline-only {
+    display: none !important;
+}
+
+/* مؤشرات عدم الاتصال في العناصر */
+.feature-unavailable {
+    opacity: 0.5;
+    pointer-events: none;
+    position: relative;
+}
+
+.feature-unavailable::after {
+    content: "غير متاح في وضع عدم الاتصال";
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: inherit;
+    font-size: 0.9rem;
+}
+
+/* مؤشرات الميزات المحظورة في الجداول */
+.table-action.offline-disabled {
+    color: #ccc;
+    cursor: not-allowed;
+}
+
+.table-action.offline-disabled:hover::after {
+    content: "غير متاح في وضع عدم الاتصال";
+    position: absolute;
+    top: -30px;
+    right: 50%;
+    transform: translateX(50%);
+    background-color: #333;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    z-index: 100;
+}
+
+/* أشكال مختلفة للمزامنة */
+.sync-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    font-size: 0.8rem;
+    margin: 0 5px;
+}
+
+.sync-status.synced {
+    background-color: rgba(25, 135, 84, 0.15);
+    color: #198754;
+}
+
+.sync-status.pending {
+    background-color: rgba(255, 193, 7, 0.15);
+    color: #ffc107;
+}
+
+.sync-status.error {
+    background-color: rgba(220, 53, 69, 0.15);
+    color: #dc3545;
+}
+
+/* تعديلات على نافذة المصادقة دون اتصال */
+#offline-auth-modal .auth-modal {
+    border: 2px solid #ffc107;
+}
+
+#offline-auth-modal .auth-modal-header {
+    background-color: #fff3cd;
+}
+
+#offline-auth-modal .auth-footer-note {
+    border-top: 1px solid #ffe69c;
+    padding-top: 10px;
+    margin-top: 15px;
+}
+
+/* وضع محدود - لإظهار أن بعض الميزات محدودة */
+body.offline .limited-feature {
+    opacity: 0.8;
+}
+
+/* رسوم متحركة */
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+/* أيقونة معلوماتية حول وضع عدم الاتصال */
+.offline-info-icon {
+    color: #6c757d;
+    margin-right: 5px;
+    cursor: help;
+}
+
+.offline-info-icon:hover::after {
+    content: "بعض البيانات قد تكون قديمة أو محدودة في وضع عدم الاتصال";
+    position: absolute;
+    top: -40px;
+    right: 0;
+    width: 220px;
+    background-color: #333;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    z-index: 100;
+}
